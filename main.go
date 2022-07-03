@@ -17,7 +17,9 @@ func main() {
 		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
 	})
 
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	go func() {
+		log.Fatal(http.ListenAndServe(":"+port, nil))
+	}()
 
 	conn, interval := api.Connect()
 	defer conn.Close()
