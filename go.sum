@@ -1,2 +1,4 @@
+github.com/symon991/pirate v0.0.0-20220703185150-41ed4260b00b h1:CW4xOjWIjzYdBAgc9eCrYCFJlB0Zd3V8PuzOH5KmPV4=
+github.com/symon991/pirate v0.0.0-20220703185150-41ed4260b00b/go.mod h1:+OiuTzRoH3/my2eAR/bh5jmy471fQ5Juo0sWxaOQLlA=
 golang.org/x/net v0.0.0-20220630215102-69896b714898 h1:K7wO6V1IrczY9QOQ2WkVpw4JQSwCd52UsxVEirZUfiw=
 golang.org/x/net v0.0.0-20220630215102-69896b714898/go.mod h1:XRhObCWvk6IyKnWLug+ECip1KBveYUHfp+8e9klMJ9c=
