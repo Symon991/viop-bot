@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"com.projectsymon/pirate/sites"
+	"github.com/symon991/pirate/sites"
 )
 
 func diceCommand(interactionCreatePayload InteractionCreatePayload) {
