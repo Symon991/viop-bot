@@ -2,16 +2,11 @@ package main
 
 import (
 	"bot/api"
-	"fmt"
-	"html"
-	"log"
-	"net/http"
-	"os"
 )
 
 func main() {
 
-	fmt.Println("STARTING")
+	/*fmt.Println("STARTING")
 
 	port := os.Getenv("PORT")
 
@@ -22,7 +17,7 @@ func main() {
 	go func() {
 		log.Fatal(http.ListenAndServe(":"+port, nil))
 		fmt.Println("LISTENING ON " + port)
-	}()
+	}()*/
 
 	conn, interval := api.Connect()
 	defer conn.Close()
