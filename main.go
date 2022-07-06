@@ -1,28 +1,19 @@
 package main
 
 import (
-	"bot/api"
+	"bot/cache"
+	"bot/commands"
+	"bot/discord"
 )
 
 func main() {
 
-	/*fmt.Println("STARTING")
-
-	port := os.Getenv("PORT")
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
-	})
-
-	go func() {
-		log.Fatal(http.ListenAndServe(":"+port, nil))
-		fmt.Println("LISTENING ON " + port)
-	}()*/
-
-	conn, interval := api.Connect()
+	conn, interval := discord.Connect()
 	defer conn.Close()
 
-	api.Heartbeat(interval, conn)
-	api.Identify(conn)
-	api.Listen(conn)
+	cache.Connect()
+
+	discord.Heartbeat(interval, conn)
+	discord.Identify(conn)
+	discord.Listen(conn, commands.HandleInteraction)
 }

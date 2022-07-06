@@ -1,6 +1,10 @@
-package api
+package discord
 
-import "time"
+import (
+	"time"
+
+	"github.com/symon991/pirate/sites"
+)
 
 type Payload struct {
 	T  interface{} `json:"t"`
@@ -231,18 +235,30 @@ type InteractionCreatePayload struct {
 			AvatarDecoration interface{} `json:"avatar_decoration"`
 			Avatar           interface{} `json:"avatar"`
 		} `json:"user"`
-		Type   int    `json:"type"`
-		Token  string `json:"token"`
-		Locale string `json:"locale"`
-		ID     string `json:"id"`
-		Data   struct {
+		Type    int    `json:"type"`
+		Token   string `json:"token"`
+		Locale  string `json:"locale"`
+		ID      string `json:"id"`
+		Message struct {
+			ID          string `json:"id"`
+			Interaction struct {
+				User interface{} `json:"user"`
+				Type int         `json:"type"`
+				Name string      `json:"name"`
+				ID   string      `json:"id"`
+			} `json:"interaction"`
+			Components []Components `json:"components"`
+			Content    string       `json:"content"`
+		} `json:"message"`
+		Data struct {
 			Options []struct {
 				Name  string      `json:"name"`
 				Value interface{} `json:"value"`
 			} `json:"options"`
-			Type int    `json:"type"`
-			Name string `json:"name"`
-			ID   string `json:"id"`
+			Type   int      `json:"type"`
+			Name   string   `json:"name"`
+			ID     string   `json:"id"`
+			Values []string `json:"values"`
 		} `json:"data"`
 		Member struct {
 			User struct {
@@ -274,8 +290,9 @@ type InteractionCreatePayload struct {
 type InteractionCallbackPayload struct {
 	Type int `json:"type"`
 	Data struct {
-		Content string  `json:"content"`
-		Embeds  []Embed `json:"embeds"`
+		Content    string       `json:"content"`
+		Embeds     []Embed      `json:"embeds"`
+		Components []Components `json:"components"`
 	} `json:"data"`
 	AllowedMentions AllowedMention `json:"allowedMentions"`
 }
@@ -300,4 +317,60 @@ type Field struct {
 
 type AllowedMention struct {
 	Parse []string `json:"parse"`
+}
+
+type Components struct {
+	Type       int         `json:"type"`
+	Components []Component `json:"components"`
+}
+
+type Component struct {
+	Type     int      `json:"type"`
+	Label    string   `json:"label"`
+	Style    int      `json:"style"`
+	CustomID string   `json:"custom_id"`
+	Options  []Option `json:"options"`
+	Url      string   `json:"url"`
+}
+
+type Option struct {
+	Label       string `json:"label"`
+	Value       string `json:"value"`
+	Description string `json:"description"`
+	Emoji       Emoji  `json:"emoji"`
+}
+
+type Emoji struct {
+	Name string `json:"name"`
+	ID   string `json:"id"`
+}
+
+type TinyUrlRequest struct {
+	Url    string `json:"url"`
+	Domain string `json:domain`
+}
+
+type TinyUrlResponse struct {
+	Data struct {
+		Domain    string `json:"domain"`
+		Alias     string `json:"alias"`
+		Deleted   bool   `json:"deleted"`
+		Archived  bool   `json:"archived"`
+		Analytics struct {
+			Enabled bool `json:"enabled"`
+			Public  bool `json:"public"`
+		} `json:"analytics"`
+		Tags      []interface{} `json:"tags"`
+		CreatedAt time.Time     `json:"created_at"`
+		ExpiresAt interface{}   `json:"expires_at"`
+		TinyURL   string        `json:"tiny_url"`
+		URL       string        `json:"url"`
+	} `json:"data"`
+	Code   int           `json:"code"`
+	Errors []interface{} `json:"errors"`
+}
+
+type CachePirateEntry struct {
+	Metadata []sites.Metadata
+	Site     string
 }

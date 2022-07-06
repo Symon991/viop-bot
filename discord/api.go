@@ -1,11 +1,9 @@
-package api
+package discord
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"math/rand"
-	"net/http"
 	"time"
 
 	"golang.org/x/net/websocket"
@@ -13,21 +11,8 @@ import (
 
 const discordSocketUrl = "wss://gateway.discord.gg/?v=10&encoding=json"
 const discordCallbackTemplateUrl = "https://discord.com/api/v10/interactions/%s/%s/callback"
-
-func postInteractionCallback(id string, token string, interactionCallbackPayload *InteractionCallbackPayload) error {
-
-	callbackPayload, err := json.Marshal(interactionCallbackPayload)
-	if err != nil {
-		return fmt.Errorf("error marshaling callback: %s", err)
-	}
-
-	callback := fmt.Sprintf(discordCallbackTemplateUrl, id, token)
-	if _, err := http.Post(callback, "application/json", bytes.NewBuffer(callbackPayload)); err != nil {
-		return fmt.Errorf("error during post to callback: %s", err)
-	}
-
-	return nil
-}
+const discordGetCallbackTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/messages/@original"
+const discordEditCallbackTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/messages/@original"
 
 func Identify(conn *websocket.Conn) {
 
@@ -60,7 +45,7 @@ func Heartbeat(heartbeat int, conn *websocket.Conn) {
 			case <-done:
 				return
 			case <-ticker.C:
-				fmt.Printf("debug sending heartbeat\n")
+				fmt.Printf("debug sending heartbeat\n\n")
 				if err := websocket.JSON.Send(conn, heartBeatPayload); err != nil {
 					fmt.Println(err)
 				}
@@ -84,7 +69,7 @@ func Connect() (*websocket.Conn, int) {
 	return conn, helloPayload.D.HeartbeatInterval
 }
 
-func Listen(conn *websocket.Conn) {
+func Listen(conn *websocket.Conn, callback func([]byte) error) {
 
 	for {
 		var message []byte
@@ -100,42 +85,22 @@ func Listen(conn *websocket.Conn) {
 		switch payload.T {
 
 		case "INTERACTION_CREATE":
-			fmt.Printf("INTERACTION_CREATE\n")
-			if err := handleInteraction(message); err != nil {
+			fmt.Printf("INTERACTION_CREATE\n\n")
+			if err := callback(message); err != nil {
 				fmt.Println(err)
 			}
 
 		case "GUILD_CREATE":
 			var guildCreatePayload GuildCreatePayload
 			json.Unmarshal(message, &guildCreatePayload)
-			fmt.Printf("GUILD_CREATE, %s, %s\n", guildCreatePayload.D.JoinedAt, guildCreatePayload.D.Name)
+			fmt.Printf("GUILD_CREATE, %s, %s\n\n", guildCreatePayload.D.JoinedAt, guildCreatePayload.D.Name)
 
 		case "MESSAGE_CREATE":
 			var messageCreatePayload MessageCreatePayload
 			json.Unmarshal(message, &messageCreatePayload)
-			fmt.Printf("MESSAGE_CREATE, %s, %s, %s\n", messageCreatePayload.D.Timestamp, messageCreatePayload.D.Author.Username, messageCreatePayload.D.Content)
+			fmt.Printf("MESSAGE_CREATE, %s, %s, %s\n\n", messageCreatePayload.D.Timestamp, messageCreatePayload.D.Author.Username, messageCreatePayload.D.Content)
 
 		default:
 		}
 	}
-}
-
-func handleInteraction(message []byte) error {
-
-	command, interactionCreatePayload := readInteractionCreatePayload(message)
-
-	switch command {
-
-	case "hello":
-		helloCommand(interactionCreatePayload)
-
-	case "pirate":
-		pirateCommand(interactionCreatePayload)
-
-	case "dice":
-		diceCommand(interactionCreatePayload)
-
-	}
-
-	return nil
 }
