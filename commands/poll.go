@@ -80,6 +80,8 @@ func pollCommmand(interactionCreate messages.InteractionCreate) error {
 	cache.Set(string(interactionCreate.D.ID), string(marshalledResult), 0)
 
 	discord.PostInteractionCallback(interactionCreate.D.ID, interactionCreate.D.Token, &interactionCallback)
+
+	return nil
 }
 
 func pollResponse(interactionCreate messages.InteractionCreate) error {
