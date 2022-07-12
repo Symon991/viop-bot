@@ -98,4 +98,5 @@ func pollResponse(interactionCreate messages.InteractionCreate) error {
 	selectedValue, err := strconv.ParseInt(interactionCreate.D.Data.Values[0], 10, 64)
 	poll.Options[selectedValue].Votes += 1
 
+	return nil
 }
