@@ -7,25 +7,34 @@ import (
 
 func HandleInteraction(message []byte) error {
 
-	command, response, interactionCreatePayload := utils.ReadInteractionCreatePayload(message)
+	command, response, interactionCreate := utils.ReadInteractionCreatePayload(message)
 
 	fmt.Printf("debug interaction: command %s, response %t\n\n", command, response)
 
 	switch command {
 
 	case "hello":
-		helloCommand(interactionCreatePayload)
+		helloCommand(interactionCreate)
 
 	case "pirate":
 		if response {
-			return pirateResponse(interactionCreatePayload)
+			return pirateResponse(interactionCreate)
 		} else {
-			pirateCommand(interactionCreatePayload)
+			pirateCommand(interactionCreate)
 		}
 
 	case "dice":
-		diceCommand(interactionCreatePayload)
+		diceCommand(interactionCreate)
 
+	case "poll":
+		if response {
+			pollResponse(interactionCreate)
+		} else {
+			pollCommmand(interactionCreate)
+		}
+
+	case "wolfram":
+		wolframCommand(interactionCreate)
 	}
 
 	return nil

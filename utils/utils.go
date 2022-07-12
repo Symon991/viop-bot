@@ -1,11 +1,11 @@
 package utils
 
 import (
-	"bot/discord"
+	"bot/discord/messages"
 	"encoding/json"
 )
 
-func GetUsername(interactionCreatePayload *discord.InteractionCreatePayload) string {
+func GetUsername(interactionCreatePayload *messages.InteractionCreate) string {
 
 	name := interactionCreatePayload.D.User.Username
 	if name == "" {
@@ -14,15 +14,15 @@ func GetUsername(interactionCreatePayload *discord.InteractionCreatePayload) str
 	return name
 }
 
-func ReadInteractionCreatePayload(message []byte) (string, bool, discord.InteractionCreatePayload) {
+func ReadInteractionCreatePayload(message []byte) (string, bool, messages.InteractionCreate) {
 
-	var interactionCreatePayload discord.InteractionCreatePayload
-	json.Unmarshal(message, &interactionCreatePayload)
+	var interactionCreate messages.InteractionCreate
+	json.Unmarshal(message, &interactionCreate)
 
-	if interactionCreatePayload.D.Message.Interaction.ID != "" {
-		return interactionCreatePayload.D.Message.Interaction.Name, true, interactionCreatePayload
+	if interactionCreate.D.Message.Interaction.ID != "" {
+		return interactionCreate.D.Message.Interaction.Name, true, interactionCreate
 	}
-	return interactionCreatePayload.D.Data.Name, false, interactionCreatePayload
+	return interactionCreate.D.Data.Name, false, interactionCreate
 }
 
 func Min(a int, b int) int {

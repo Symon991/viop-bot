@@ -1,6 +1,7 @@
 package discord
 
 import (
+	"bot/discord/messages"
 	"encoding/json"
 	"fmt"
 	"math/rand"
@@ -16,7 +17,7 @@ const discordEditCallbackTemplateUrl = "https://discord.com/api/v10/webhooks/%s/
 
 func Identify(conn *websocket.Conn) {
 
-	var identifyPayload IdentifyPayload
+	var identifyPayload messages.Identify
 	identifyPayload.D.Token = "OTkyNTA4MDg5NDYwODYzMDM3.G5BwZ6.lJHFJWmzTQPGYE3bjQZoE_mW9zXoOFUuUeQhRk"
 	identifyPayload.Op = 2
 	identifyPayload.D.Intents = int(int8(1) << int8(4))
@@ -34,7 +35,7 @@ func Heartbeat(heartbeat int, conn *websocket.Conn) {
 	ticker := time.NewTicker(time.Duration(float32(heartbeat)*rand.Float32()) * time.Millisecond)
 	done := make(chan bool)
 
-	heartBeatPayload := HeartBeatPayload{Op: 1, D: 0}
+	heartBeatPayload := messages.HeartBeat{Op: 1, D: 0}
 	if err := websocket.JSON.Send(conn, heartBeatPayload); err != nil {
 		fmt.Println(err)
 	}
@@ -61,7 +62,7 @@ func Connect() (*websocket.Conn, int) {
 		fmt.Println(err)
 	}
 
-	var helloPayload HelloPayload
+	var helloPayload messages.Hello
 	if err := websocket.JSON.Receive(conn, &helloPayload); err != nil {
 		fmt.Println(err)
 	}
@@ -79,7 +80,7 @@ func Listen(conn *websocket.Conn, callback func([]byte) error) {
 		}
 		fmt.Printf("debug raw_message: %s\n\n", message)
 
-		var payload Payload
+		var payload messages.Base
 		json.Unmarshal(message, &payload)
 
 		switch payload.T {
@@ -89,16 +90,6 @@ func Listen(conn *websocket.Conn, callback func([]byte) error) {
 			if err := callback(message); err != nil {
 				fmt.Println(err)
 			}
-
-		case "GUILD_CREATE":
-			var guildCreatePayload GuildCreatePayload
-			json.Unmarshal(message, &guildCreatePayload)
-			fmt.Printf("GUILD_CREATE, %s, %s\n\n", guildCreatePayload.D.JoinedAt, guildCreatePayload.D.Name)
-
-		case "MESSAGE_CREATE":
-			var messageCreatePayload MessageCreatePayload
-			json.Unmarshal(message, &messageCreatePayload)
-			fmt.Printf("MESSAGE_CREATE, %s, %s, %s\n\n", messageCreatePayload.D.Timestamp, messageCreatePayload.D.Author.Username, messageCreatePayload.D.Content)
 
 		default:
 		}

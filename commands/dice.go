@@ -2,14 +2,15 @@ package commands
 
 import (
 	"bot/discord"
+	"bot/discord/messages"
 	"fmt"
 	"math/rand"
 )
 
-func diceCommand(interactionCreatePayload discord.InteractionCreatePayload) {
+func diceCommand(interactionCreate messages.InteractionCreate) {
 
-	faces := int64(interactionCreatePayload.D.Data.Options[0].Value.(float64))
-	dices := int64(interactionCreatePayload.D.Data.Options[1].Value.(float64))
+	faces := int64(interactionCreate.D.Data.Options[0].Value.(float64))
+	dices := int64(interactionCreate.D.Data.Options[1].Value.(float64))
 	var result []int64
 
 	var i int64
@@ -17,9 +18,9 @@ func diceCommand(interactionCreatePayload discord.InteractionCreatePayload) {
 		result = append(result, rand.Int63n(faces)+1)
 	}
 
-	var interactionCallbackPayload discord.InteractionCallbackPayload
-	interactionCallbackPayload.Type = 4
-	interactionCallbackPayload.Data.Content = fmt.Sprintf("%dd%d, result: %d", dices, faces, result)
+	var interactionCallback messages.InteractionCallback
+	interactionCallback.Type = 4
+	interactionCallback.Data.Content = fmt.Sprintf("%dd%d, result: %d", dices, faces, result)
 
-	discord.PostInteractionCallback(interactionCreatePayload.D.ID, interactionCreatePayload.D.Token, &interactionCallbackPayload)
+	discord.PostInteractionCallback(interactionCreate.D.ID, interactionCreate.D.Token, &interactionCallback)
 }

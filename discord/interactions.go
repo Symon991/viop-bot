@@ -1,6 +1,7 @@
 package discord
 
 import (
+	"bot/discord/messages"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -8,7 +9,7 @@ import (
 	"net/http"
 )
 
-func PostInteractionCallback(id string, token string, interactionCallbackPayload *InteractionCallbackPayload) error {
+func PostInteractionCallback(id string, token string, interactionCallbackPayload *messages.InteractionCallback) error {
 
 	callbackPayload, err := json.Marshal(interactionCallbackPayload)
 	if err != nil {
@@ -29,7 +30,7 @@ func PostInteractionCallback(id string, token string, interactionCallbackPayload
 	return nil
 }
 
-func GetOriginalInteraction(appId string, token string, messageId string) (*InteractionCallbackPayload, error) {
+func GetOriginalInteraction(appId string, token string, messageId string) (*messages.InteractionCallback, error) {
 
 	getCallback := fmt.Sprintf(discordGetCallbackTemplateUrl, appId, token)
 	response, err := http.Get(getCallback)
@@ -40,7 +41,7 @@ func GetOriginalInteraction(appId string, token string, messageId string) (*Inte
 	body, _ := io.ReadAll(response.Body)
 	fmt.Printf("debug getOriginal Interaction %s\n\n", body)
 
-	var interactionCallbackPayload InteractionCallbackPayload
+	var interactionCallbackPayload messages.InteractionCallback
 	err = json.Unmarshal(body, &interactionCallbackPayload)
 	if err != nil {
 		return nil, fmt.Errorf("error unmarshalling response: %s", err)
@@ -49,7 +50,7 @@ func GetOriginalInteraction(appId string, token string, messageId string) (*Inte
 	return &interactionCallbackPayload, nil
 }
 
-func EditOriginalInteraction(appId string, token string, messageId string, interactionCallbackPayload *InteractionCallbackPayload) error {
+func EditOriginalInteraction(appId string, token string, messageId string, interactionCallbackPayload *messages.InteractionCallback) error {
 
 	callbackPayload, err := json.Marshal(interactionCallbackPayload)
 	if err != nil {
