@@ -21,8 +21,9 @@ func Connect() {
 	//redis://default:nOkwJjqxqrkAzQJSX12eVquZ8IpA9htw@redis-13631.c6.eu-west-1-1.ec2.cloud.redislabs.com:13631
 
 	rdb = redis.NewClient(&redis.Options{
-		Addr:     "nOkwJjqxqrkAzQJSX12eVquZ8IpA9htw@redis-13631.c6.eu-west-1-1.ec2.cloud.redislabs.com:13631",
+		Addr:     "redis-13631.c6.eu-west-1-1.ec2.cloud.redislabs.com:13631",
 		Username: "default",
+		Password: "nOkwJjqxqrkAzQJSX12eVquZ8IpA9htw",
 	})
 }
 
