@@ -12,7 +12,7 @@ import (
 	"github.com/symon991/pirate/sites"
 )
 
-func pirateCommand(interactionCreatePayload messages.InteractionCreate) {
+func pirateCommand(interactionCreatePayload messages.InteractionCreate) error {
 
 	var result []sites.Metadata
 	var site string
@@ -26,10 +26,13 @@ func pirateCommand(interactionCreatePayload messages.InteractionCreate) {
 		result = sites.SearchNyaa(interactionCreatePayload.D.Data.Options[0].Value.(string))
 	}
 
-	marshalledResult, _ := json.Marshal(cache.PirateEntry{
+	marshalledResult, err := json.Marshal(cache.PirateEntry{
 		Metadata: result,
 		Site:     interactionCreatePayload.D.Data.Options[1].Value.(string),
 	})
+	if err != nil {
+		return fmt.Errorf("pirateCommand: %s", err)
+	}
 
 	cache.Set(string(interactionCreatePayload.D.ID), string(marshalledResult), 0)
 
@@ -67,7 +70,12 @@ func pirateCommand(interactionCreatePayload messages.InteractionCreate) {
 		},
 	})
 
-	discord.PostInteractionCallback(interactionCreatePayload.D.ID, interactionCreatePayload.D.Token, &interactionCallbackPayload)
+	err = discord.PostInteractionCallback(interactionCreatePayload.D.ID, interactionCreatePayload.D.Token, &interactionCallbackPayload)
+	if err != nil {
+		return fmt.Errorf("pirateCommand: %s", err)
+	}
+
+	return nil
 }
 
 func pirateResponse(interactionCreatePayload messages.InteractionCreate) error {
