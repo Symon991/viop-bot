@@ -28,6 +28,10 @@ func pirateCommand(interactionCreatePayload messages.InteractionCreate) error {
 		result = sites.SearchNyaa(interactionCreatePayload.D.Data.Options[0].Value.(string))
 	}
 
+	fmt.Println(interactionCreatePayload.D.Data.Options[0].Value.(string))
+	fmt.Println(site)
+	fmt.Println(result)
+
 	if err != nil {
 		return err
 	}
