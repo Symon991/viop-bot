@@ -6,5 +6,7 @@ github.com/go-redis/redis/v9 v9.0.0-beta.1 h1:oW3jlPic5HhGUbYMH0lidnP+72BgsT+lCw
 github.com/go-redis/redis/v9 v9.0.0-beta.1/go.mod h1:6gNX1bXdwkpEG0M/hEBNK/Fp8zdyCkjwwKc6vBbfCDI=
 github.com/symon991/pirate v0.0.0-20220705204009-fa0614e49542 h1:VSJ0ONI+/eR6MN3C1c+5flXcMZZ5ykF6E3LQhNTHqEM=
 github.com/symon991/pirate v0.0.0-20220705204009-fa0614e49542/go.mod h1:+OiuTzRoH3/my2eAR/bh5jmy471fQ5Juo0sWxaOQLlA=
+github.com/symon991/pirate v0.0.0-20220715192039-41770e5bf5d9 h1:RD9B+MyHQYf2zkOWxxoeNaf+Df3eKvBdec0n3pkoDeo=
+github.com/symon991/pirate v0.0.0-20220715192039-41770e5bf5d9/go.mod h1:+OiuTzRoH3/my2eAR/bh5jmy471fQ5Juo0sWxaOQLlA=
 golang.org/x/net v0.0.0-20220708220712-1185a9018129 h1:vucSRfWwTsoXro7P+3Cjlr6flUMtzCwzlvkxEQtHHB0=
 golang.org/x/net v0.0.0-20220708220712-1185a9018129/go.mod h1:XRhObCWvk6IyKnWLug+ECip1KBveYUHfp+8e9klMJ9c=
