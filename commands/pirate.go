@@ -16,14 +16,20 @@ func pirateCommand(interactionCreatePayload messages.InteractionCreate) error {
 
 	var result []sites.Metadata
 	var site string
+	var err error
+	err = nil
 
 	switch interactionCreatePayload.D.Data.Options[1].Value {
 	case "piratebay":
 		site = "Pirate Bay"
-		result = sites.SearchTorrent(interactionCreatePayload.D.Data.Options[0].Value.(string))
+		result, err = sites.SearchTorrent(interactionCreatePayload.D.Data.Options[0].Value.(string))
 	case "nyaa":
 		site = "Nyaa"
 		result = sites.SearchNyaa(interactionCreatePayload.D.Data.Options[0].Value.(string))
+	}
+
+	if err != nil {
+		return err
 	}
 
 	marshalledResult, err := json.Marshal(cache.PirateEntry{
