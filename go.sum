@@ -4,8 +4,6 @@ github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f h1:lO4WD4F/r
 github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f/go.mod h1:cuUVRXasLTGF7a8hSLbxyZXjz+1KgoB3wDUb6vlszIc=
 github.com/go-redis/redis/v9 v9.0.0-beta.1 h1:oW3jlPic5HhGUbYMH0lidnP+72BgsT+lCwlVud6o2Mc=
 github.com/go-redis/redis/v9 v9.0.0-beta.1/go.mod h1:6gNX1bXdwkpEG0M/hEBNK/Fp8zdyCkjwwKc6vBbfCDI=
-github.com/symon991/pirate v0.0.0-20220715192039-41770e5bf5d9 h1:RD9B+MyHQYf2zkOWxxoeNaf+Df3eKvBdec0n3pkoDeo=
-github.com/symon991/pirate v0.0.0-20220715192039-41770e5bf5d9/go.mod h1:+OiuTzRoH3/my2eAR/bh5jmy471fQ5Juo0sWxaOQLlA=
 github.com/symon991/pirate v0.0.0-20220715195402-e9e4803e3484 h1:CYazsHKpF/WAiljtQRGRBQDJ8ybH7A5DRsapNpRcjzc=
 github.com/symon991/pirate v0.0.0-20220715195402-e9e4803e3484/go.mod h1:+OiuTzRoH3/my2eAR/bh5jmy471fQ5Juo0sWxaOQLlA=
 golang.org/x/net v0.0.0-20220708220712-1185a9018129 h1:vucSRfWwTsoXro7P+3Cjlr6flUMtzCwzlvkxEQtHHB0=
