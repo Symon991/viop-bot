@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/go-redis/redis/v9 v9.0.0-beta.1
-	github.com/symon991/pirate v0.0.0-20220716120036-3a06964f7217
+	github.com/symon991/pirate v0.0.4
 	golang.org/x/net v0.0.0-20220708220712-1185a9018129
 )
 
