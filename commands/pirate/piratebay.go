@@ -69,12 +69,14 @@ func SearchTorrent(search string) ([]Metadata, error) {
 		fmt.Println(err)
 		return nil, fmt.Errorf("search torrent: %s", err)
 	}
-	fmt.Println(response.Body)
+
 	bytes, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		fmt.Println(err)
 		return nil, fmt.Errorf("search torrent: %s", err)
 	}
+
+	fmt.Printf("%s", bytes)
 
 	var pirateBayMetadata []PirateBayMetadata
 	err = json.Unmarshal(bytes, &pirateBayMetadata)
