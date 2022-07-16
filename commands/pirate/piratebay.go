@@ -79,6 +79,8 @@ func SearchTorrent(search string) ([]Metadata, error) {
 		return nil, fmt.Errorf("search torrent: %s", err)
 	}
 
+	fmt.Println(response.Status)
+	fmt.Println(bytes)
 	fmt.Println("test")
 	fmt.Println(pirateBayMetadata)
 
