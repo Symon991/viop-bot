@@ -4,9 +4,12 @@ import (
 	"bot/cache"
 	"bot/commands"
 	"bot/discord"
+	"fmt"
 )
 
 func main() {
+
+	fmt.Println("START")
 
 	conn, interval := discord.Connect()
 	defer conn.Close()
