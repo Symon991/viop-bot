@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/symon991/pirate/sites"
+	sites "bot/commands/pirate"
 )
 
 func pirateCommand(interactionCreatePayload messages.InteractionCreate) error {

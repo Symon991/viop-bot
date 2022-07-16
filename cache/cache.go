@@ -4,12 +4,13 @@ import (
 	"context"
 	"time"
 
+	"bot/commands/pirate"
+
 	"github.com/go-redis/redis/v9"
-	"github.com/symon991/pirate/sites"
 )
 
 type PirateEntry struct {
-	Metadata []sites.Metadata
+	Metadata []pirate.Metadata
 	Site     string
 }
 
@@ -18,12 +19,12 @@ var ctx = context.Background()
 
 func Connect() {
 
-	//redis://default:nOkwJjqxqrkAzQJSX12eVquZ8IpA9htw@redis-13631.c6.eu-west-1-1.ec2.cloud.redislabs.com:13631
+	//redis://default:f7qdLKe6OvswaAmKQ6gLGOLJKKnoDPnL@redis-11314.c2.eu-west-1-3.ec2.cloud.redislabs.com:11314
 
 	rdb = redis.NewClient(&redis.Options{
-		Addr:     "redis-13631.c6.eu-west-1-1.ec2.cloud.redislabs.com:13631",
+		Addr:     "redis-11314.c2.eu-west-1-3.ec2.cloud.redislabs.com:13631",
 		Username: "default",
-		Password: "nOkwJjqxqrkAzQJSX12eVquZ8IpA9htw",
+		Password: "f7qdLKe6OvswaAmKQ6gLGOLJKKnoDPnL",
 	})
 }
 
