@@ -72,10 +72,17 @@ type InteractionCreate struct {
 		Message struct {
 			ID          string `json:"id"`
 			Interaction struct {
-				User interface{} `json:"user"`
-				Type int         `json:"type"`
-				Name string      `json:"name"`
-				ID   string      `json:"id"`
+				User struct {
+					Username         string      `json:"username"`
+					PublicFlags      int         `json:"public_flags"`
+					ID               string      `json:"id"`
+					Discriminator    string      `json:"discriminator"`
+					AvatarDecoration interface{} `json:"avatar_decoration"`
+					Avatar           interface{} `json:"avatar"`
+				} `json:"user"`
+				Type int    `json:"type"`
+				Name string `json:"name"`
+				ID   string `json:"id"`
 			} `json:"interaction"`
 			Components []Components `json:"components"`
 			Content    string       `json:"content"`

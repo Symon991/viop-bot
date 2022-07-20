@@ -4,15 +4,8 @@ import (
 	"context"
 	"time"
 
-	"bot/commands/pirate"
-
 	"github.com/go-redis/redis/v9"
 )
-
-type PirateEntry struct {
-	Metadata []pirate.Metadata
-	Site     string
-}
 
 var rdb *redis.Client
 var ctx = context.Background()

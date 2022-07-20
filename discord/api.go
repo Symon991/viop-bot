@@ -14,6 +14,7 @@ const discordSocketUrl = "wss://gateway.discord.gg/?v=10&encoding=json"
 const discordCallbackTemplateUrl = "https://discord.com/api/v10/interactions/%s/%s/callback"
 const discordGetCallbackTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/messages/@original"
 const discordEditCallbackTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/messages/@original"
+const discordFollowUpTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/"
 
 func Identify(conn *websocket.Conn) {
 
@@ -84,7 +85,6 @@ func Listen(conn *websocket.Conn, callback func([]byte) error) {
 		json.Unmarshal(message, &payload)
 
 		switch payload.T {
-
 		case "INTERACTION_CREATE":
 			fmt.Printf("INTERACTION_CREATE\n\n")
 			if err := callback(message); err != nil {

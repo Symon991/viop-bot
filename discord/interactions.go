@@ -30,6 +30,27 @@ func PostInteractionCallback(id string, token string, interactionCallbackPayload
 	return nil
 }
 
+func PostFollowUp(id string, token string, interactionCallbackPayload *messages.InteractionCallback) error {
+
+	callbackPayload, err := json.Marshal(interactionCallbackPayload)
+	if err != nil {
+		return fmt.Errorf("error marshaling callback: %s", err)
+	}
+
+	callback := fmt.Sprintf(discordFollowUpTemplateUrl, id, token)
+	fmt.Printf("%s\n\n", callback)
+	fmt.Printf("%s\n\n", callbackPayload)
+	response, err := http.Post(callback, "application/json", bytes.NewBuffer(callbackPayload))
+	if err != nil {
+		return fmt.Errorf("error during post to callback: %s", err)
+	}
+
+	body, _ := io.ReadAll(response.Body)
+	fmt.Printf("%s\n\n", string(body))
+
+	return nil
+}
+
 func GetOriginalInteraction(appId string, token string, messageId string) (*messages.InteractionCallback, error) {
 
 	getCallback := fmt.Sprintf(discordGetCallbackTemplateUrl, appId, token)

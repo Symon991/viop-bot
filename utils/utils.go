@@ -22,6 +22,7 @@ func ReadInteractionCreatePayload(message []byte) (string, bool, messages.Intera
 	if interactionCreate.D.Message.Interaction.ID != "" {
 		return interactionCreate.D.Message.Interaction.Name, true, interactionCreate
 	}
+
 	return interactionCreate.D.Data.Name, false, interactionCreate
 }
 

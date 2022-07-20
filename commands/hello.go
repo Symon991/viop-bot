@@ -7,13 +7,23 @@ import (
 	"fmt"
 )
 
-func helloCommand(interactionCreate messages.InteractionCreate) {
+type HelloCommand struct {
+	interactionCreate messages.InteractionCreate
+}
 
-	name := utils.GetUsername(&interactionCreate)
+func (d HelloCommand) Execute() error {
 
-	var interactionCallback messages.InteractionCallback
-	interactionCallback.Type = 4
-	interactionCallback.Data.Content = fmt.Sprintf("Hello, %s.", name)
+	name := utils.GetUsername(&d.interactionCreate)
 
-	discord.PostInteractionCallback(interactionCreate.D.ID, interactionCreate.D.Token, &interactionCallback)
+	interactionCallback := utils.CreateInteractionCallback().
+		AddContent(
+			fmt.Sprintf("Hello, %s.", name))
+
+	discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
+
+	return nil
+}
+
+func (d HelloCommand) Respond() error {
+	return nil
 }
