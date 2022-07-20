@@ -9,9 +9,10 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 )
 
-const wolframApiUrlTemplate = "http://api.wolframalpha.com/v1/conversation.jsp?i=%s&appid=8PHTWK-KL2R5P6WEU"
+const wolframApiUrlTemplate = "http://api.wolframalpha.com/v1/conversation.jsp?i=%s&appid=%s"
 
 type WolframResponse struct {
 	Result         string `json:"result"`
@@ -26,7 +27,7 @@ type WolframCommand struct {
 
 func (d WolframCommand) Execute() error {
 
-	response, err := http.Get(fmt.Sprintf(wolframApiUrlTemplate, url.QueryEscape(d.interactionCreate.D.Data.Options[0].Value.(string))))
+	response, err := http.Get(fmt.Sprintf(wolframApiUrlTemplate, url.QueryEscape(d.interactionCreate.D.Data.Options[0].Value.(string)), url.QueryEscape(os.Getenv("WOLFRAM_APPLICATION_ID"))))
 	if err != nil {
 		return fmt.Errorf("wolfram api get: %w", err)
 	}

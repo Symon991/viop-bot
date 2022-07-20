@@ -2,6 +2,8 @@ package cache
 
 import (
 	"context"
+	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/go-redis/redis/v9"
@@ -10,14 +12,16 @@ import (
 var rdb *redis.Client
 var ctx = context.Background()
 
-func Connect() {
+func Connect(url *url.URL) {
 
-	//redis://default:f7qdLKe6OvswaAmKQ6gLGOLJKKnoDPnL@redis-11314.c2.eu-west-1-3.ec2.cloud.redislabs.com:11314
+	addr := fmt.Sprintf("%s:%s", url.Hostname(), url.Port())
+	username := url.User.Username()
+	password, _ := url.User.Password()
 
 	rdb = redis.NewClient(&redis.Options{
-		Addr:     "redis-11314.c2.eu-west-1-3.ec2.cloud.redislabs.com:11314",
-		Username: "default",
-		Password: "f7qdLKe6OvswaAmKQ6gLGOLJKKnoDPnL",
+		Addr:     addr,
+		Username: username,
+		Password: password,
 	})
 }
 

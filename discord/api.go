@@ -16,10 +16,10 @@ const discordGetCallbackTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%
 const discordEditCallbackTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/messages/@original"
 const discordFollowUpTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/"
 
-func Identify(conn *websocket.Conn) {
+func Identify(conn *websocket.Conn, appId string) {
 
 	var identifyPayload messages.Identify
-	identifyPayload.D.Token = "OTkyNTA4MDg5NDYwODYzMDM3.G5BwZ6.lJHFJWmzTQPGYE3bjQZoE_mW9zXoOFUuUeQhRk"
+	identifyPayload.D.Token = appId
 	identifyPayload.Op = 2
 	identifyPayload.D.Intents = int(int8(1) << int8(4))
 	identifyPayload.D.Properties.Browser = "placeholder"

@@ -55,11 +55,8 @@ func (p *PollCommand) Execute() error {
 	cache.Set(string(p.interactionCreate.D.ID), string(marshalledResult), 0)
 
 	interactionCallback := messageFromPoll(poll, false)
-	//followUp := followUpFromPoll(poll)
 
 	discord.PostInteractionCallback(p.interactionCreate.D.ID, p.interactionCreate.D.Token, interactionCallback.Get())
-
-	//discord.PostFollowUp(p.interactionCreate.D.ApplicationID, p.interactionCreate.D.Token, followUp.Get())
 
 	return nil
 }
