@@ -6,6 +6,7 @@ import (
 	"bot/utils"
 	"fmt"
 	"math/rand"
+	"time"
 )
 
 type DiceCommand struct {
@@ -17,6 +18,8 @@ func (d DiceCommand) Execute() error {
 	faces := int64(d.interactionCreate.D.Data.Options[0].Value.(float64))
 	dices := int64(d.interactionCreate.D.Data.Options[1].Value.(float64))
 	var result []int64
+
+	rand.Seed(time.Now().UnixNano())
 
 	var i int64
 	for i = 0; i < dices; i++ {
