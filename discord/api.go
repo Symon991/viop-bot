@@ -86,12 +86,16 @@ func Listen(conn *websocket.Conn, callback func([]byte) error) {
 
 		switch payload.T {
 		case "INTERACTION_CREATE":
-			fmt.Printf("INTERACTION_CREATE\n\n")
-			if err := callback(message); err != nil {
-				fmt.Println(err)
-			}
-
+			go interactionCreateRoutine(message, callback)
 		default:
 		}
+	}
+}
+
+func interactionCreateRoutine(message []byte, callback func([]byte) error) {
+
+	fmt.Printf("INTERACTION_CREATE\n\n")
+	if err := callback(message); err != nil {
+		fmt.Println(err)
 	}
 }
