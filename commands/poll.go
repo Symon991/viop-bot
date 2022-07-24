@@ -54,20 +54,39 @@ func (p *PollCommand) Execute() error {
 	}
 	cache.Set(string(p.interactionCreate.D.ID), string(marshalledResult), 0)
 
-	interactionCallback := messageFromPoll(poll, false)
+	interactionCallback := messageFromPoll(poll, false, true)
 
 	discord.PostInteractionCallback(p.interactionCreate.D.ID, p.interactionCreate.D.Token, interactionCallback.Get())
 
 	return nil
 }
 
-func messageFromPoll(poll Poll, edit bool) *utils.InteractionCallbackBuilder {
+func pivotOptionUsers(poll Poll) *map[int][]string {
+
+	pivot := make(map[int][]string)
+
+	for user, choice := range poll.Users {
+		pivot[choice] = append(pivot[choice], user)
+	}
+
+	return &pivot
+}
+
+func messageFromPoll(poll Poll, edit bool, showUsers bool) *utils.InteractionCallbackBuilder {
 
 	embed := utils.CreateEmbed("Poll", poll.Question)
 	selectComponent := utils.CreateSelectComponent("Your choice:", "test")
+	pivot := pivotOptionUsers(poll)
 
 	for i, option := range poll.Options {
-		embed.AddField(utils.CreateField(option.Description, fmt.Sprint(option.Votes)))
+		if showUsers {
+			embed.AddField(utils.CreateField(option.Description,
+				fmt.Sprintf("%d (%s)",
+					option.Votes,
+					strings.Join((*pivot)[i], ","))))
+		} else {
+			embed.AddField(utils.CreateField(option.Description, fmt.Sprint(option.Votes)))
+		}
 		selectComponent.AddOption(utils.CreateOption(option.Description, "", fmt.Sprint(i)))
 	}
 
@@ -131,7 +150,7 @@ func (p *PollCommand) Respond() error {
 		cache.Set(string(p.interactionCreate.D.Message.Interaction.ID), string(marshalledResult), 0)
 	}
 
-	interactionCallback := messageFromPoll(poll, true)
+	interactionCallback := messageFromPoll(poll, true, true)
 
 	discord.PostInteractionCallback(p.interactionCreate.D.ID, p.interactionCreate.D.Token, interactionCallback.Get())
 
