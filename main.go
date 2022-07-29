@@ -28,7 +28,7 @@ func main() {
 
 	discord.Heartbeat(interval, conn)
 	discord.Identify(conn, os.Getenv("DISCORD_APPLICATION_ID"))
-	discord.Listen(conn, commands.HandleInteraction)
+	go discord.Listen(conn, commands.HandleInteraction)
 
 	channel := make(chan twitter.StreamMessage, 1)
 	go twitter.Stream(channel)
