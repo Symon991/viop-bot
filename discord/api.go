@@ -15,6 +15,7 @@ const discordCallbackTemplateUrl = "https://discord.com/api/v10/interactions/%s/
 const discordGetCallbackTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/messages/@original"
 const discordEditCallbackTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/messages/@original"
 const discordFollowUpTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/"
+const discordPostChannelBotInfoUrl = "https://discord.com/api/v10/channels/1001195728477097984/messages"
 
 func Identify(conn *websocket.Conn, appId string) {
 

@@ -192,3 +192,9 @@ type TinyUrlRequest struct {
 	Url    string `json:"url"`
 	Domain string `json:"domain"`
 }
+
+type ChannelMessage struct {
+	Content string  `json:"content"`
+	TTS     bool    `json:"tts"`
+	Embeds  []Embed `json:"embeds"`
+}

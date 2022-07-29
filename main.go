@@ -4,6 +4,8 @@ import (
 	"bot/cache"
 	"bot/commands"
 	"bot/discord"
+	"bot/discord/messages"
+	"bot/twitter"
 	"fmt"
 	"net/url"
 	"os"
@@ -27,4 +29,13 @@ func main() {
 	discord.Heartbeat(interval, conn)
 	discord.Identify(conn, os.Getenv("DISCORD_APPLICATION_ID"))
 	discord.Listen(conn, commands.HandleInteraction)
+
+	channel := make(chan twitter.StreamMessage, 1)
+	go twitter.Stream(channel)
+
+	for {
+		discord.PostChannelMessage(messages.ChannelMessage{
+			Content: (<-channel).Data.Text,
+		})
+	}
 }
