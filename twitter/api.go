@@ -58,6 +58,7 @@ func AddRule(value string, tag string) error {
 	if err != nil {
 		return fmt.Errorf("create request: %w", err)
 	}
+	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAD%2FGfAEAAAAAcz3b%2FgLeLDFSM%2Fgvmd2MxHXqUD4%3DXkm65WicZo7jKVeKu3tBy5CSZmvbRdoHceX6WnJCFuJbKCl5Jf")
 
 	response, err := (&http.Client{}).Do(request)
@@ -116,6 +117,7 @@ func RemoveRule(id string) error {
 	if err != nil {
 		return fmt.Errorf("create request: %w", err)
 	}
+	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAD%2FGfAEAAAAAcz3b%2FgLeLDFSM%2Fgvmd2MxHXqUD4%3DXkm65WicZo7jKVeKu3tBy5CSZmvbRdoHceX6WnJCFuJbKCl5Jf")
 
 	response, err := http.DefaultClient.Do(request)
