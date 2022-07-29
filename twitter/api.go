@@ -24,9 +24,9 @@ type GetRulesMessage struct {
 }
 
 type Rule struct {
-	ID    string `json:"id"`
-	Value string `json:"value"`
-	Tag   string `json:"tag"`
+	ID    string `json:"id,omitempty"`
+	Value string `json:"value,omitempty"`
+	Tag   string `json:"tag,omitempty"`
 }
 
 type StreamMessage struct {
