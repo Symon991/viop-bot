@@ -28,6 +28,8 @@ func HandleInteraction(message []byte) error {
 		c = &WolframCommand{interactionCreate}
 	case "poll":
 		c = &PollCommand{interactionCreate}
+	case "twitter":
+		c = &TwitterCommand{interactionCreate}
 	default:
 		return fmt.Errorf("command not found")
 	}
