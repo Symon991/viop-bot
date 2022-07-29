@@ -60,7 +60,7 @@ func AddRule(value string, tag string) error {
 	}
 	request.Header.Set("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAD%2FGfAEAAAAAcz3b%2FgLeLDFSM%2Fgvmd2MxHXqUD4%3DXkm65WicZo7jKVeKu3tBy5CSZmvbRdoHceX6WnJCFuJbKCl5Jf")
 
-	response, err := http.DefaultClient.Do(request)
+	response, err := (&http.Client{}).Do(request)
 	if err != nil {
 		return fmt.Errorf("post add rule: %w", err)
 	}
@@ -78,7 +78,7 @@ func GetRules() (*GetRulesMessage, error) {
 	}
 	request.Header.Set("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAD%2FGfAEAAAAAcz3b%2FgLeLDFSM%2Fgvmd2MxHXqUD4%3DXkm65WicZo7jKVeKu3tBy5CSZmvbRdoHceX6WnJCFuJbKCl5Jf")
 
-	response, err := http.DefaultClient.Do(request)
+	response, err := (&http.Client{}).Do(request)
 	if err != nil {
 		return nil, fmt.Errorf("get rules: %w", err)
 	}
