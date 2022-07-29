@@ -28,14 +28,29 @@ func (d TwitterCommand) Execute() error {
 		id := d.interactionCreate.D.Data.Options[0].Options[0].Value.(string)
 		err = twitter.RemoveRule(id)
 		message = "Removed rule"
+	case "rules":
+		message = "Rules"
+	default:
+		return fmt.Errorf("subcommand not found")
 	}
 
 	if err != nil {
 		return fmt.Errorf("subcommand %s: %w", subcommand, err)
 	}
 
+	rules, err := twitter.GetRules()
+	if err != nil {
+		return fmt.Errorf("get rules: %w", err)
+	}
+
+	embed := utils.CreateEmbed("Rules", "")
+	for _, rule := range rules.Data {
+		embed.AddField(utils.CreateField(rule.Value, rule.Tag))
+	}
+
 	interactionCallback := utils.CreateInteractionCallback().
-		AddContent(message)
+		AddContent(message).
+		AddEmbed(embed)
 
 	discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
 
