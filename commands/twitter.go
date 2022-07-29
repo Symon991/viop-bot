@@ -45,7 +45,7 @@ func (d TwitterCommand) Execute() error {
 
 	embed := utils.CreateEmbed("Rules", "")
 	for _, rule := range rules.Data {
-		embed.AddField(utils.CreateField(rule.Value, rule.Tag))
+		embed.AddField(utils.CreateField(fmt.Sprintf("%s (%s)", rule.Tag, rule.ID), rule.Value))
 	}
 
 	interactionCallback := utils.CreateInteractionCallback().
