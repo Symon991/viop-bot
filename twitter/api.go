@@ -63,7 +63,8 @@ func AddRule(value string, tag string) error {
 	if err != nil {
 		return fmt.Errorf("post add rule: %w", err)
 	}
-	fmt.Printf("%s", response.Body)
+	byte, _ = io.ReadAll(response.Body)
+	fmt.Printf("%s", byte)
 
 	return nil
 }
@@ -119,7 +120,8 @@ func RemoveRule(id string) error {
 	if err != nil {
 		return fmt.Errorf("post add rule: %w", err)
 	}
-	fmt.Printf("%s", response.Body)
+	byte, _ = io.ReadAll(response.Body)
+	fmt.Printf("%s", byte)
 
 	return nil
 }
