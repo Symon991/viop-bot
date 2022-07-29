@@ -59,7 +59,11 @@ func AddRule(value string, tag string) error {
 	}
 	request.Header.Set("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAD%2FGfAEAAAAAcz3b%2FgLeLDFSM%2Fgvmd2MxHXqUD4%3DXkm65WicZo7jKVeKu3tBy5CSZmvbRdoHceX6WnJCFuJbKCl5Jf")
 
-	http.DefaultClient.Do(request)
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		return fmt.Errorf("post add rule: %w", err)
+	}
+	fmt.Printf("%s", response.Body)
 
 	return nil
 }
@@ -111,7 +115,11 @@ func RemoveRule(id string) error {
 	}
 	request.Header.Set("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAD%2FGfAEAAAAAcz3b%2FgLeLDFSM%2Fgvmd2MxHXqUD4%3DXkm65WicZo7jKVeKu3tBy5CSZmvbRdoHceX6WnJCFuJbKCl5Jf")
 
-	http.DefaultClient.Do(request)
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		return fmt.Errorf("post add rule: %w", err)
+	}
+	fmt.Printf("%s", response.Body)
 
 	return nil
 }
