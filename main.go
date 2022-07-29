@@ -34,8 +34,9 @@ func main() {
 	go twitter.Stream(channel)
 
 	for {
+		tweet := (<-channel)
 		discord.PostChannelMessage(messages.ChannelMessage{
-			Content: (<-channel).Data.Text,
+			Content: fmt.Sprintf("https://twitter.com/user/status/%s", tweet.Data.ID),
 		})
 	}
 }
