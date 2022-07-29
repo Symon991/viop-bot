@@ -52,6 +52,7 @@ func AddRule(value string, tag string) error {
 	if err != nil {
 		return fmt.Errorf("marshal addRuleMessage: %w", err)
 	}
+	fmt.Printf("%s", byte)
 
 	request, err := http.NewRequest("POST", tweetStreamFilterUrl, bytes.NewBuffer(byte))
 	if err != nil {
@@ -109,6 +110,7 @@ func RemoveRule(id string) error {
 	if err != nil {
 		return fmt.Errorf("marshal deleteRuleMessage: %w", err)
 	}
+	fmt.Printf("%s", byte)
 
 	request, err := http.NewRequest("POST", tweetStreamFilterUrl, bytes.NewBuffer(byte))
 	if err != nil {
