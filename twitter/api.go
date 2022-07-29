@@ -16,7 +16,9 @@ type AddRuleMessage struct {
 }
 
 type DeleteRuleMessage struct {
-	Delete []Rule `json:"delete"`
+	Delete struct {
+		IDs []string `json:"ids"`
+	} `json:"delete"`
 }
 
 type GetRulesMessage struct {
@@ -100,12 +102,8 @@ func GetRules() (*GetRulesMessage, error) {
 
 func RemoveRule(id string) error {
 
-	rule := Rule{
-		ID: id,
-	}
-
 	var deleteRuleMessage DeleteRuleMessage
-	deleteRuleMessage.Delete = append(deleteRuleMessage.Delete, rule)
+	deleteRuleMessage.Delete.IDs = append(deleteRuleMessage.Delete.IDs, id)
 
 	byte, err := json.Marshal(deleteRuleMessage)
 	if err != nil {
