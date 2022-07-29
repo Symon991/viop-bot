@@ -89,8 +89,12 @@ type InteractionCreate struct {
 		} `json:"message"`
 		Data struct {
 			Options []struct {
-				Name  string      `json:"name"`
-				Value interface{} `json:"value"`
+				Name    string      `json:"name"`
+				Value   interface{} `json:"value"`
+				Options []struct {
+					Name  string      `json:"name"`
+					Value interface{} `json:"value"`
+				} `json:"options"`
 			} `json:"options"`
 			Type   int      `json:"type"`
 			Name   string   `json:"name"`
