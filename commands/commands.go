@@ -28,6 +28,8 @@ func HandleInteraction(message []byte) error {
 		c = &WolframCommand{interactionCreate}
 	case "poll":
 		c = &PollCommand{interactionCreate}
+	default:
+		return fmt.Errorf("command not found")
 	}
 
 	if response {
