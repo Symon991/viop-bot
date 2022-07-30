@@ -31,7 +31,7 @@ func (d CountdownCommand) Execute() error {
 			AddContent(fmt.Sprintf("%d", start)).
 			Get()
 
-		discord.EditOriginalInteraction(d.interactionCreate.D.ID, d.interactionCreate.D.Token, "", interactionCallback)
+		discord.EditOriginalInteraction(d.interactionCreate.D.ApplicationID, d.interactionCreate.D.Token, interactionCallback)
 
 		start = start - 1
 		if start <= 0 {

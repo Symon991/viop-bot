@@ -72,7 +72,7 @@ func GetOriginalInteraction(appId string, token string, messageId string) (*mess
 	return &interactionCallbackPayload, nil
 }
 
-func EditOriginalInteraction(appId string, token string, messageId string, interactionCallbackPayload *messages.InteractionCallback) error {
+func EditOriginalInteraction(appId string, token string, interactionCallbackPayload *messages.InteractionCallback) error {
 
 	callbackPayload, err := json.Marshal(interactionCallbackPayload)
 	if err != nil {
