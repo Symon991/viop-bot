@@ -33,7 +33,13 @@ type Rule struct {
 }
 
 type StreamMessage struct {
-	Data Data `json:"data"`
+	Data          Data           `json:"data"`
+	MatchingRules []MatchingRule `json:"matching_rules"`
+}
+
+type MatchingRule struct {
+	ID  string `json:"id"`
+	Tag string `json:"tag"`
 }
 
 type Data struct {

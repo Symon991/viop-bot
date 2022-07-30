@@ -79,7 +79,7 @@ func Listen(conn *websocket.Conn, callback func([]byte) error) {
 		var message []byte
 		if err := websocket.Message.Receive(conn, &message); err != nil {
 			log.Println(err)
-			break
+			return
 		}
 		log.Printf("debug raw_message: %s\n\n", message)
 
