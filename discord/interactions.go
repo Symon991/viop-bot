@@ -84,6 +84,7 @@ func EditOriginalInteraction(appId string, token string, interactionCallbackPayl
 	log.Printf("%s\n\n", callbackPayload)
 
 	request, _ := http.NewRequest("PATCH", callback, bytes.NewBuffer(callbackPayload))
+	request.Header.Set("Content-Type", "application/json")
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
