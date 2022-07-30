@@ -16,7 +16,7 @@ const discordCallbackTemplateUrl = "https://discord.com/api/v10/interactions/%s/
 const discordGetCallbackTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/messages/@original"
 const discordEditCallbackTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/messages/@original"
 const discordFollowUpTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/"
-const discordPostChannelBotInfoUrl = "https://discord.com/api/v10/channels/1001195728477097984/messages"
+const discordPostChannelBotInfoUrl = "https://discord.com/api/v10/channels/1003011209848701068/messages"
 
 func Identify(conn *websocket.Conn, appId string) {
 
@@ -43,15 +43,15 @@ func Heartbeat(heartbeat int, conn *websocket.Conn) {
 		log.Println(err)
 	}
 
-	go func() {
+	go func() error {
 		for {
 			select {
 			case <-done:
-				return
+				return nil
 			case <-ticker.C:
 				fmt.Printf("debug sending heartbeat\n\n")
 				if err := websocket.JSON.Send(conn, heartBeatPayload); err != nil {
-					fmt.Println(err)
+					return fmt.Errorf("sending heartbeat: %w", err)
 				}
 			}
 		}
