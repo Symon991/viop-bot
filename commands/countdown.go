@@ -17,6 +17,7 @@ func (d CountdownCommand) Execute() error {
 	start := int64(d.interactionCreate.D.Data.Options[0].Value.(float64))
 
 	ticker := time.NewTicker(time.Second)
+	<-ticker.C
 
 	interactionCallback := utils.CreateInteractionCallback().
 		AddContent(fmt.Sprintf("%d", start)).
