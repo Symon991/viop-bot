@@ -33,10 +33,14 @@ func (d CountdownCommand) Execute() error {
 
 		<-ticker.C
 
-		if start <= 0 {
+		if start <= 1 {
 			break
 		}
 	}
+
+	discord.EditOriginalInteraction(d.interactionCreate.D.ApplicationID, d.interactionCreate.D.Token, &messages.Data{
+		Content: "Let's go!",
+	})
 
 	return nil
 }
