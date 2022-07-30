@@ -25,15 +25,14 @@ func (d CountdownCommand) Execute() error {
 	discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback)
 
 	for {
+		start = start - 1
+
+		discord.EditOriginalInteraction(d.interactionCreate.D.ApplicationID, d.interactionCreate.D.Token, &messages.Data{
+			Content: fmt.Sprintf("%d", start),
+		})
+
 		<-ticker.C
 
-		interactionCallback = utils.CreateInteractionCallback().
-			AddContent(fmt.Sprintf("%d", start)).
-			Get()
-
-		discord.EditOriginalInteraction(d.interactionCreate.D.ApplicationID, d.interactionCreate.D.Token, interactionCallback)
-
-		start = start - 1
 		if start <= 0 {
 			break
 		}
