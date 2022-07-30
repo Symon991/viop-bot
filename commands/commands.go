@@ -3,6 +3,7 @@ package commands
 import (
 	"bot/utils"
 	"fmt"
+	"log"
 )
 
 type Command interface {
@@ -15,7 +16,7 @@ func HandleInteraction(message []byte) error {
 	var c Command
 	var err error
 	command, response, interactionCreate := utils.ReadInteractionCreatePayload(message)
-	fmt.Printf("debug interaction: command %s, response %t\n\n", command, response)
+	log.Printf("debug interaction: command %s, response %t\n\n", command, response)
 
 	switch command {
 	case "hello":
@@ -30,6 +31,8 @@ func HandleInteraction(message []byte) error {
 		c = &PollCommand{interactionCreate}
 	case "twitter":
 		c = &TwitterCommand{interactionCreate}
+	case "countdown":
+		c = &CountdownCommand{interactionCreate}
 	default:
 		return fmt.Errorf("command not found")
 	}

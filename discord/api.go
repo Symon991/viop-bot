@@ -4,6 +4,7 @@ import (
 	"bot/discord/messages"
 	"encoding/json"
 	"fmt"
+	"log"
 	"math/rand"
 	"time"
 
@@ -28,7 +29,7 @@ func Identify(conn *websocket.Conn, appId string) {
 	identifyPayload.D.Properties.Os = "linux"
 
 	if err := websocket.JSON.Send(conn, identifyPayload); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 }
 
@@ -39,7 +40,7 @@ func Heartbeat(heartbeat int, conn *websocket.Conn) {
 
 	heartBeatPayload := messages.HeartBeat{Op: 1, D: 0}
 	if err := websocket.JSON.Send(conn, heartBeatPayload); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	go func() {
@@ -61,12 +62,12 @@ func Connect() (*websocket.Conn, int) {
 
 	conn, err := websocket.Dial(discordSocketUrl, "", "http://localhost")
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	var helloPayload messages.Hello
 	if err := websocket.JSON.Receive(conn, &helloPayload); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	return conn, helloPayload.D.HeartbeatInterval
@@ -77,10 +78,10 @@ func Listen(conn *websocket.Conn, callback func([]byte) error) {
 	for {
 		var message []byte
 		if err := websocket.Message.Receive(conn, &message); err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			break
 		}
-		fmt.Printf("debug raw_message: %s\n\n", message)
+		log.Printf("debug raw_message: %s\n\n", message)
 
 		var payload messages.Base
 		json.Unmarshal(message, &payload)
@@ -97,6 +98,6 @@ func interactionCreateRoutine(message []byte, callback func([]byte) error) {
 
 	fmt.Printf("INTERACTION_CREATE\n\n")
 	if err := callback(message); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 }

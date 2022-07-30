@@ -7,13 +7,14 @@ import (
 	"bot/discord/messages"
 	"bot/twitter"
 	"fmt"
+	"log"
 	"net/url"
 	"os"
 )
 
 func main() {
 
-	fmt.Println("START")
+	log.Println("START")
 
 	conn, interval := discord.Connect()
 	defer conn.Close()
@@ -21,7 +22,7 @@ func main() {
 	redisCloudUrlEnv := os.Getenv("REDISCLOUD_URL")
 	redisCloudUrl, err := url.Parse(redisCloudUrlEnv)
 	if err != nil {
-		panic(fmt.Errorf("paring redis cloud url: %w", err))
+		log.Panicln(fmt.Errorf("paring redis cloud url: %w", err))
 	}
 
 	cache.Connect(redisCloudUrl)
