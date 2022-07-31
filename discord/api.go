@@ -57,6 +57,8 @@ func Heartbeat(heartbeat int, conn *websocket.Conn, errorChan chan error) error 
 			}
 		}
 	}()
+
+	return nil
 }
 
 func Connect() (*websocket.Conn, int) {
