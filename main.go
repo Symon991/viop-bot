@@ -4,13 +4,11 @@ import (
 	"bot/cache"
 	"bot/commands"
 	"bot/discord"
-	"bot/discord/messages"
 	"bot/twitter"
 	"fmt"
 	"log"
 	"net/url"
 	"os"
-	"strings"
 )
 
 func main() {
@@ -24,24 +22,30 @@ func main() {
 	}
 	cache.Connect(redisCloudUrl)
 
+	discordErrorChan := make(chan error)
+	twitterErrorChan := make(chan error)
+
 	conn, interval := discord.Connect()
-	defer conn.Close()
-
-	discord.Heartbeat(interval, conn)
+	discord.Heartbeat(interval, conn, discordErrorChan)
 	discord.Identify(conn, os.Getenv("DISCORD_APPLICATION_ID"))
-	go discord.Listen(conn, commands.HandleInteraction)
+	go discord.Listen(conn, commands.HandleInteraction, discordErrorChan)
 
-	channel := make(chan twitter.StreamMessage, 1)
-	go twitter.Stream(channel)
+	go twitter.Monitor(twitterErrorChan)
 
 	for {
-		tweet := (<-channel)
-		var matchingRules []string
-		for _, matchingRule := range tweet.MatchingRules {
-			matchingRules = append(matchingRules, matchingRule.Tag)
+		select {
+		case <-discordErrorChan:
+			log.Println(err)
+
+			conn.Close()
+
+			conn, interval := discord.Connect()
+			discord.Heartbeat(interval, conn, discordErrorChan)
+			discord.Identify(conn, os.Getenv("DISCORD_APPLICATION_ID"))
+			go discord.Listen(conn, commands.HandleInteraction, discordErrorChan)
+
+		case <-twitterErrorChan:
+			go twitter.Monitor(twitterErrorChan)
 		}
-		discord.PostChannelMessage(messages.ChannelMessage{
-			Content: fmt.Sprintf("[%s] https://twitter.com/user/status/%s", strings.Join(matchingRules, ", "), tweet.Data.ID),
-		})
 	}
 }

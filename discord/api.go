@@ -33,7 +33,7 @@ func Identify(conn *websocket.Conn, appId string) {
 	}
 }
 
-func Heartbeat(heartbeat int, conn *websocket.Conn) {
+func Heartbeat(heartbeat int, conn *websocket.Conn, errorChan chan error) {
 
 	ticker := time.NewTicker(time.Duration(float32(heartbeat)*rand.Float32()) * time.Millisecond)
 	done := make(chan bool)
@@ -43,15 +43,16 @@ func Heartbeat(heartbeat int, conn *websocket.Conn) {
 		log.Println(err)
 	}
 
-	go func() error {
+	go func() {
 		for {
 			select {
 			case <-done:
-				return nil
+				return
 			case <-ticker.C:
 				fmt.Printf("debug sending heartbeat\n\n")
 				if err := websocket.JSON.Send(conn, heartBeatPayload); err != nil {
-					return fmt.Errorf("sending heartbeat: %w", err)
+					errorChan <- fmt.Errorf("sending heartbeat: %w", err)
+					return
 				}
 			}
 		}
@@ -73,12 +74,12 @@ func Connect() (*websocket.Conn, int) {
 	return conn, helloPayload.D.HeartbeatInterval
 }
 
-func Listen(conn *websocket.Conn, callback func([]byte) error) {
+func Listen(conn *websocket.Conn, callback func([]byte) error, errorChan chan error) {
 
 	for {
 		var message []byte
 		if err := websocket.Message.Receive(conn, &message); err != nil {
-			log.Println(err)
+			errorChan <- fmt.Errorf("websocket recieve: %w", err)
 			return
 		}
 		log.Printf("debug raw_message: %s\n\n", message)

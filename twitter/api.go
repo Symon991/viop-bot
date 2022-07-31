@@ -135,24 +135,27 @@ func RemoveRule(id string) error {
 	return nil
 }
 
-func Stream(dataChannel chan StreamMessage) error {
+func Stream(dataChannel chan StreamMessage, errorChan chan error) {
 
 	request, err := http.NewRequest("GET", tweetStreamUrl, nil)
 	if err != nil {
-		return fmt.Errorf("create request: %w", err)
+		errorChan <- fmt.Errorf("create request: %w", err)
+		return
 	}
 	request.Header.Set("Authorization", "Bearer AAAAAAAAAAAAAAAAAAAAAD%2FGfAEAAAAAcz3b%2FgLeLDFSM%2Fgvmd2MxHXqUD4%3DXkm65WicZo7jKVeKu3tBy5CSZmvbRdoHceX6WnJCFuJbKCl5Jf")
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
-		return fmt.Errorf("get rules: %w", err)
+		errorChan <- fmt.Errorf("get rules: %w", err)
+		return
 	}
 
 	var streamMessage StreamMessage
 	for {
 		err := json.NewDecoder(response.Body).Decode(&streamMessage)
 		if err != nil {
-			return fmt.Errorf("error stream: %w", err)
+			errorChan <- fmt.Errorf("error stream: %w", err)
+			return
 		}
 		dataChannel <- streamMessage
 	}
