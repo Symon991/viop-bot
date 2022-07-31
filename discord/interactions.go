@@ -24,6 +24,7 @@ func PostInteractionCallback(id string, token string, interactionCallbackPayload
 	if err != nil {
 		return fmt.Errorf("post callback message: %s", err)
 	}
+	defer response.Body.Close()
 
 	body, _ := io.ReadAll(response.Body)
 	log.Printf("%s\n\n", string(body))
@@ -45,6 +46,7 @@ func PostFollowUp(id string, token string, interactionCallbackPayload *messages.
 	if err != nil {
 		return fmt.Errorf("post follow up message: %s", err)
 	}
+	defer response.Body.Close()
 
 	body, _ := io.ReadAll(response.Body)
 	fmt.Printf("%s\n\n", string(body))
@@ -60,6 +62,8 @@ func GetOriginalInteraction(appId string, token string, messageId string) (*mess
 	if err != nil {
 		return nil, fmt.Errorf("get original interaction: %s", err)
 	}
+	defer response.Body.Close()
+
 	body, _ := io.ReadAll(response.Body)
 	log.Printf("debug getOriginal Interaction %s\n\n", body)
 
@@ -90,6 +94,7 @@ func EditOriginalInteraction(appId string, token string, interactionCallbackPayl
 	if err != nil {
 		return fmt.Errorf("post callback message: %s", err)
 	}
+	defer response.Body.Close()
 
 	body, _ := io.ReadAll(response.Body)
 	log.Printf("%s", string(body))

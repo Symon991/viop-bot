@@ -48,6 +48,14 @@ type Data struct {
 	Text string `json:"text"`
 }
 
+func doRequest(request *http.Request) (*http.Response, error) {
+
+	request.Header.Set("Content-Type", "application/json")
+	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("TWITTER_BEARER_TOKEN")))
+
+	return (&http.Client{}).Do(request)
+}
+
 func AddRule(value string, tag string) error {
 
 	rule := Rule{
@@ -68,13 +76,13 @@ func AddRule(value string, tag string) error {
 	if err != nil {
 		return fmt.Errorf("create request: %w", err)
 	}
-	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("TWITTER_BEARER_TOKEN")))
 
-	response, err := (&http.Client{}).Do(request)
+	response, err := doRequest(request)
 	if err != nil {
 		return fmt.Errorf("post add rule: %w", err)
 	}
+	defer response.Body.Close()
+
 	byte, _ = io.ReadAll(response.Body)
 	log.Printf("%s", byte)
 
@@ -87,12 +95,12 @@ func GetRules() (*GetRulesMessage, error) {
 	if err != nil {
 		return nil, fmt.Errorf("create request: %w", err)
 	}
-	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("TWITTER_BEARER_TOKEN")))
 
-	response, err := (&http.Client{}).Do(request)
+	response, err := doRequest(request)
 	if err != nil {
 		return nil, fmt.Errorf("get rules: %w", err)
 	}
+	defer response.Body.Close()
 
 	bytes, err := io.ReadAll(response.Body)
 	if err != nil {
@@ -123,15 +131,15 @@ func RemoveRule(id string) error {
 	if err != nil {
 		return fmt.Errorf("create request: %w", err)
 	}
-	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("TWITTER_BEARER_TOKEN")))
 
-	response, err := http.DefaultClient.Do(request)
+	response, err := doRequest(request)
 	if err != nil {
 		return fmt.Errorf("post add rule: %w", err)
 	}
+	defer response.Body.Close()
+
 	byte, _ = io.ReadAll(response.Body)
-	fmt.Printf("%s", byte)
+	log.Printf("%s", byte)
 
 	return nil
 }
@@ -143,9 +151,8 @@ func Stream(dataChannel chan StreamMessage, errorChan chan error) {
 		errorChan <- fmt.Errorf("create request: %w", err)
 		return
 	}
-	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("TWITTER_BEARER_TOKEN")))
 
-	response, err := http.DefaultClient.Do(request)
+	response, err := doRequest(request)
 	if err != nil {
 		errorChan <- fmt.Errorf("get rules: %w", err)
 		return
@@ -156,6 +163,7 @@ func Stream(dataChannel chan StreamMessage, errorChan chan error) {
 		err := json.NewDecoder(response.Body).Decode(&streamMessage)
 		if err != nil {
 			errorChan <- fmt.Errorf("error stream: %w", err)
+			response.Body.Close()
 			return
 		}
 		dataChannel <- streamMessage
