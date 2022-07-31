@@ -13,12 +13,12 @@ import (
 
 func main() {
 
-	log.Println("START")
+	log.Print("START")
 
 	redisCloudUrlEnv := os.Getenv("REDISCLOUD_URL")
 	redisCloudUrl, err := url.Parse(redisCloudUrlEnv)
 	if err != nil {
-		log.Panicln(fmt.Errorf("paring redis cloud url: %w", err))
+		log.Panic(fmt.Errorf("paring redis cloud url: %w", err))
 	}
 	cache.Connect(redisCloudUrl)
 
@@ -35,7 +35,7 @@ func main() {
 	for {
 		select {
 		case <-discordErrorChan:
-			log.Println(err)
+			log.Print(err)
 
 			conn.Close()
 
