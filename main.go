@@ -18,6 +18,7 @@ func main() {
 	discordErrorChan := make(chan error)
 	twitterErrorChan := make(chan error)
 
+	startRedis()
 	conn := startDiscord(discordErrorChan)
 	defer conn.Close()
 	startTwitter(twitterErrorChan)
@@ -42,6 +43,7 @@ func startDiscord(errorChan chan error) *websocket.Conn {
 	discord.Heartbeat(interval, conn, errorChan)
 	discord.Identify(conn, os.Getenv("DISCORD_APPLICATION_ID"))
 	go discord.Listen(conn, commands.HandleInteraction, errorChan)
+	return conn
 }
 
 func startTwitter(errorChan chan error) {
