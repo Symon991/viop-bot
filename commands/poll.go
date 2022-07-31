@@ -128,8 +128,8 @@ func (p *PollCommand) Respond() error {
 		return fmt.Errorf("unmarshal value from cache: %w", err)
 	}
 
-	fmt.Println(poll)
-	fmt.Println(poll.Users)
+	fmt.Print(poll)
+	fmt.Print(poll.Users)
 
 	if _, exist := poll.Users[p.interactionCreate.D.Member.User.Username]; !exist {
 
@@ -141,7 +141,7 @@ func (p *PollCommand) Respond() error {
 		poll.Options[selectedValue].Votes += 1
 		poll.Users[p.interactionCreate.D.Member.User.Username] = int(selectedValue)
 
-		fmt.Println(poll.Users)
+		fmt.Print(poll.Users)
 
 		marshalledResult, err := json.Marshal(poll)
 		if err != nil {

@@ -33,14 +33,14 @@ func Identify(conn *websocket.Conn, appId string) {
 	}
 }
 
-func Heartbeat(heartbeat int, conn *websocket.Conn, errorChan chan error) {
+func Heartbeat(heartbeat int, conn *websocket.Conn, errorChan chan error) error {
 
 	ticker := time.NewTicker(time.Duration(float32(heartbeat)*rand.Float32()) * time.Millisecond)
 	done := make(chan bool)
 
 	heartBeatPayload := messages.HeartBeat{Op: 1, D: 0}
 	if err := websocket.JSON.Send(conn, heartBeatPayload); err != nil {
-		log.Print(err)
+		return fmt.Errorf("sending heartbeat: %w", err)
 	}
 
 	go func() {

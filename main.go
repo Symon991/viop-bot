@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/url"
 	"os"
+	"time"
 
 	"golang.org/x/net/websocket"
 )
@@ -27,11 +28,15 @@ func main() {
 		select {
 		case err := <-discordErrorChan:
 			log.Print(err)
+			log.Print("connection error detected, reconnect in 5 seconds")
+			time.Sleep(time.Second * 5)
 			conn.Close()
 			conn = startDiscord(discordErrorChan)
 
 		case err := <-twitterErrorChan:
 			log.Print(err)
+			log.Print("twitter monitor error detected, restart in 5 seconds")
+			time.Sleep(time.Second * 5)
 			startTwitter(twitterErrorChan)
 		}
 	}
