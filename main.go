@@ -29,8 +29,9 @@ func main() {
 		case err := <-discordErrorChan:
 			log.Print(err)
 			log.Print("connection error detected, reconnect in 5 seconds")
-			time.Sleep(time.Second * 5)
 			conn.Close()
+
+			time.Sleep(time.Second * 5)
 			conn = startDiscord(discordErrorChan)
 
 		case err := <-twitterErrorChan:
