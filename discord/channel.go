@@ -22,7 +22,7 @@ func PostChannelMessage(channelMessage messages.ChannelMessage) error {
 		return fmt.Errorf("create request: %w", err)
 	}
 	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("Authorization", fmt.Sprintf("Bot %s", os.Getenv("TWITTER_BEARER_TOKEN")))
+	request.Header.Set("Authorization", fmt.Sprintf("Bot %s", os.Getenv("DISCORD_APPLICATION_ID")))
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
