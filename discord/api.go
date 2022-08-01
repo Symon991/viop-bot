@@ -29,8 +29,11 @@ func Identify(conn *websocket.Conn, appId string) {
 	identifyPayload.D.Properties.Os = "linux"
 
 	if err := websocket.JSON.Send(conn, identifyPayload); err != nil {
-		log.Print(err)
+		log.Panic(err)
 	}
+
+	log.Print("debug identifyPayload: ")
+	log.Print(identifyPayload)
 }
 
 func Heartbeat(heartbeat int, conn *websocket.Conn, errorChan chan error) error {
@@ -72,6 +75,9 @@ func Connect() (*websocket.Conn, int, error) {
 	if err := websocket.JSON.Receive(conn, &helloPayload); err != nil {
 		return nil, 0, fmt.Errorf("recieve hello: %w", err)
 	}
+
+	log.Print("debug hello payload: ")
+	log.Print(helloPayload)
 
 	return conn, helloPayload.D.HeartbeatInterval, nil
 }
