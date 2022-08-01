@@ -61,19 +61,19 @@ func Heartbeat(heartbeat int, conn *websocket.Conn, errorChan chan error) error 
 	return nil
 }
 
-func Connect() (*websocket.Conn, int) {
+func Connect() (*websocket.Conn, int, error) {
 
 	conn, err := websocket.Dial(discordSocketUrl, "", "http://localhost")
 	if err != nil {
-		log.Print(err)
+		return nil, 0, fmt.Errorf("connect websocket: %w", err)
 	}
 
 	var helloPayload messages.Hello
 	if err := websocket.JSON.Receive(conn, &helloPayload); err != nil {
-		log.Print(err)
+		return nil, 0, fmt.Errorf("recieve hello: %w", err)
 	}
 
-	return conn, helloPayload.D.HeartbeatInterval
+	return conn, helloPayload.D.HeartbeatInterval, nil
 }
 
 func Listen(conn *websocket.Conn, callback func([]byte) error, errorChan chan error) {

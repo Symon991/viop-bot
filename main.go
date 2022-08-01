@@ -45,7 +45,10 @@ func main() {
 
 func startDiscord(errorChan chan error) *websocket.Conn {
 
-	conn, interval := discord.Connect()
+	conn, interval, err := discord.Connect()
+	if err != nil {
+		log.Panic(err)
+	}
 	discord.Heartbeat(interval, conn, errorChan)
 	discord.Identify(conn, os.Getenv("DISCORD_APPLICATION_ID"))
 	go discord.Listen(conn, commands.HandleInteraction, errorChan)
