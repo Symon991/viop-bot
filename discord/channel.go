@@ -7,13 +7,14 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 )
 
 func PostChannelMessage(channelMessage messages.ChannelMessage) error {
 
 	channelMessagePayload, err := json.Marshal(channelMessage)
 	if err != nil {
-		return fmt.Errorf("error marshaling channel message: %s", err)
+		return fmt.Errorf("marshaling channel message: %s", err)
 	}
 
 	request, err := http.NewRequest("POST", discordPostChannelBotInfoUrl, bytes.NewBuffer(channelMessagePayload))
@@ -21,7 +22,7 @@ func PostChannelMessage(channelMessage messages.ChannelMessage) error {
 		return fmt.Errorf("create request: %w", err)
 	}
 	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("Authorization", "Bot OTkyNTA4MDg5NDYwODYzMDM3.G5BwZ6.lJHFJWmzTQPGYE3bjQZoE_mW9zXoOFUuUeQhRk")
+	request.Header.Set("Authorization", fmt.Sprintf("Bot %s", os.Getenv("TWITTER_BEARER_TOKEN")))
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
