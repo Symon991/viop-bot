@@ -31,13 +31,13 @@ func main() {
 			log.Print("connection error detected, reconnect in 5 seconds")
 			conn.Close()
 
-			time.Sleep(time.Second * 5)
+			time.Sleep(time.Second * 30)
 			conn = startDiscord(discordErrorChan)
 
 		case err := <-twitterErrorChan:
 			log.Print(err)
 			log.Print("twitter monitor error detected, restart in 5 seconds")
-			time.Sleep(time.Second * 5)
+			time.Sleep(time.Second * 30)
 			startTwitter(twitterErrorChan)
 		}
 	}
