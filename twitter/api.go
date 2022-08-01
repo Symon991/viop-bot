@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 )
 
@@ -51,7 +52,7 @@ type Data struct {
 func doRequest(request *http.Request) (*http.Response, error) {
 
 	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", os.Getenv("TWITTER_BEARER_TOKEN")))
+	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", url.QueryEscape(os.Getenv("TWITTER_BEARER_TOKEN"))))
 
 	return (&http.Client{}).Do(request)
 }
