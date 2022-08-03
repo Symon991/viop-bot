@@ -43,7 +43,7 @@ func Heartbeat(heartbeat int, conn *websocket.Conn, errorChan chan error) error 
 
 	heartBeatPayload := messages.HeartBeat{Op: 1, D: 0}
 	if err := conn.WriteJSON(heartBeatPayload); err != nil {
-		return fmt.Errorf("sending heartbeat: %w", err)
+		log.Print(fmt.Errorf("sending heartbeat: %w", err))
 	}
 
 	go func() {
@@ -55,7 +55,6 @@ func Heartbeat(heartbeat int, conn *websocket.Conn, errorChan chan error) error 
 				log.Printf("debug sending heartbeat\n\n")
 				if err := conn.WriteJSON(heartBeatPayload); err != nil {
 					errorChan <- fmt.Errorf("sending heartbeat: %w", err)
-					return
 				}
 			}
 		}
@@ -73,7 +72,7 @@ func Connect() (*websocket.Conn, int, error) {
 
 	var helloPayload messages.Hello
 	if err := conn.ReadJSON(&helloPayload); err != nil {
-		return nil, 0, fmt.Errorf("recieve hello: %w", err)
+		return nil, 0, fmt.Errorf("receive hello: %w", err)
 	}
 
 	log.Print("debug hello payload: ")
@@ -88,7 +87,6 @@ func Listen(conn *websocket.Conn, callback func([]byte) error, errorChan chan er
 		_, message, err := conn.ReadMessage()
 		if err != nil {
 			errorChan <- fmt.Errorf("websocket receive: %w", err)
-			return
 		}
 		log.Printf("debug raw_message: %s\n\n", message)
 
