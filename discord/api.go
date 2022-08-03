@@ -8,7 +8,7 @@ import (
 	"math/rand"
 	"time"
 
-	"golang.org/x/net/websocket"
+	"github.com/gorilla/websocket"
 )
 
 const discordSocketUrl = "wss://gateway.discord.gg/?v=10&encoding=json"
@@ -28,7 +28,7 @@ func Identify(conn *websocket.Conn, appId string) {
 	identifyPayload.D.Properties.Device = "placeholder"
 	identifyPayload.D.Properties.Os = "linux"
 
-	if err := websocket.JSON.Send(conn, identifyPayload); err != nil {
+	if err := conn.WriteJSON(identifyPayload); err != nil {
 		log.Panic(err)
 	}
 
@@ -42,7 +42,7 @@ func Heartbeat(heartbeat int, conn *websocket.Conn, errorChan chan error) error 
 	done := make(chan bool)
 
 	heartBeatPayload := messages.HeartBeat{Op: 1, D: 0}
-	if err := websocket.JSON.Send(conn, heartBeatPayload); err != nil {
+	if err := conn.WriteJSON(heartBeatPayload); err != nil {
 		return fmt.Errorf("sending heartbeat: %w", err)
 	}
 
@@ -53,7 +53,7 @@ func Heartbeat(heartbeat int, conn *websocket.Conn, errorChan chan error) error 
 				return
 			case <-ticker.C:
 				log.Printf("debug sending heartbeat\n\n")
-				if err := websocket.JSON.Send(conn, heartBeatPayload); err != nil {
+				if err := conn.WriteJSON(heartBeatPayload); err != nil {
 					errorChan <- fmt.Errorf("sending heartbeat: %w", err)
 					return
 				}
@@ -66,13 +66,13 @@ func Heartbeat(heartbeat int, conn *websocket.Conn, errorChan chan error) error 
 
 func Connect() (*websocket.Conn, int, error) {
 
-	conn, err := websocket.Dial(discordSocketUrl, "", "http://localhost")
+	conn, _, err := websocket.DefaultDialer.Dial(discordSocketUrl, nil)
 	if err != nil {
 		return nil, 0, fmt.Errorf("connect websocket: %w", err)
 	}
 
 	var helloPayload messages.Hello
-	if err := websocket.JSON.Receive(conn, &helloPayload); err != nil {
+	if err := conn.ReadJSON(&helloPayload); err != nil {
 		return nil, 0, fmt.Errorf("recieve hello: %w", err)
 	}
 
@@ -85,9 +85,9 @@ func Connect() (*websocket.Conn, int, error) {
 func Listen(conn *websocket.Conn, callback func([]byte) error, errorChan chan error) {
 
 	for {
-		var message []byte
-		if err := websocket.Message.Receive(conn, &message); err != nil {
-			errorChan <- fmt.Errorf("websocket recieve: %w", err)
+		_, message, err := conn.ReadMessage()
+		if err != nil {
+			errorChan <- fmt.Errorf("websocket receeive: %w", err)
 			return
 		}
 		log.Printf("debug raw_message: %s\n\n", message)

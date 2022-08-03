@@ -11,7 +11,7 @@ import (
 	"os"
 	"time"
 
-	"golang.org/x/net/websocket"
+	"github.com/gorilla/websocket"
 )
 
 func main() {
