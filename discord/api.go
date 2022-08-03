@@ -87,7 +87,7 @@ func Listen(conn *websocket.Conn, callback func([]byte) error, errorChan chan er
 	for {
 		_, message, err := conn.ReadMessage()
 		if err != nil {
-			errorChan <- fmt.Errorf("websocket receeive: %w", err)
+			errorChan <- fmt.Errorf("websocket receive: %w", err)
 			return
 		}
 		log.Printf("debug raw_message: %s\n\n", message)

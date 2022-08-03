@@ -28,11 +28,11 @@ func main() {
 		select {
 		case err := <-discordErrorChan:
 			log.Print(err)
-			log.Print("connection error detected, reconnect in 5 seconds")
-			conn.Close()
+			//log.Print("connection error detected, reconnect in 5 seconds")
+			//conn.Close()
 
-			time.Sleep(time.Second * 30)
-			conn = startDiscord(discordErrorChan)
+			//time.Sleep(time.Second * 30)
+			//conn = startDiscord(discordErrorChan)
 
 		case err := <-twitterErrorChan:
 			log.Print(err)
