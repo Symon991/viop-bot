@@ -30,8 +30,8 @@ func (d MudTimeCommand) Execute() error {
 	if err != nil {
 		return fmt.Errorf("parse time: %w", err)
 	}
-	inputTime = inputTime.AddDate(2020, 0, 0)
 
+	inputTime = inputTime.AddDate(2020, 0, 0)
 	mudTime := inputTime.In(mudLocation)
 
 	interactionCallback := utils.CreateInteractionCallback().

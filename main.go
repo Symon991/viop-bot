@@ -9,7 +9,6 @@ import (
 	"log"
 	"net/url"
 	"os"
-	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -36,9 +35,9 @@ func main() {
 
 		case err := <-twitterErrorChan:
 			log.Print(err)
-			log.Print("twitter monitor error detected, restart in 5 seconds")
-			time.Sleep(time.Second * 30)
-			startTwitter(twitterErrorChan)
+			//log.Print("twitter monitor error detected, restart in 5 seconds")
+			//time.Sleep(time.Second * 30)
+			//startTwitter(twitterErrorChan)
 		}
 	}
 }
