@@ -33,6 +33,8 @@ func HandleInteraction(message []byte) error {
 		c = &TwitterCommand{interactionCreate}
 	case "countdown":
 		c = &CountdownCommand{interactionCreate}
+	case "mudtime":
+		c = &MudTimeCommand{interactionCreate}
 	default:
 		return fmt.Errorf("command not found")
 	}
