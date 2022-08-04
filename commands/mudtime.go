@@ -31,10 +31,10 @@ func (d MudTimeCommand) Execute() error {
 		return fmt.Errorf("parse time: %w", err)
 	}
 
-	inputTime.In(mudLocation)
+	mudTime := inputTime.In(mudLocation)
 
 	interactionCallback := utils.CreateInteractionCallback().
-		AddContent(fmt.Sprintf("In MudTime: %s", inputTime.String())).
+		AddContent(fmt.Sprintf("%s in MudTime: %s", inputTime.Format(time.Kitchen), mudTime.Format(time.Kitchen))).
 		Get()
 
 	discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback)
