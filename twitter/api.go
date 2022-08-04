@@ -163,6 +163,7 @@ func Stream(dataChannel chan StreamMessage, errorChan chan error) {
 		err := json.NewDecoder(response.Body).Decode(&streamMessage)
 		if err != nil {
 			errorChan <- fmt.Errorf("error stream: %w", err)
+			break
 		}
 		dataChannel <- streamMessage
 	}
