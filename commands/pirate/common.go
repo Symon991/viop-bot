@@ -31,6 +31,8 @@ func GetSearch(site string) Search {
 		return &PirateBaySearch{}
 	case "nyaa":
 		return &NyaaSearch{}
+	case "leetx":
+		return &LeetxSearch{}
 	}
 	return nil
 }
