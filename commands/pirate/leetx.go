@@ -15,15 +15,16 @@ func (*LeetxSearch) Search(search string) ([]Metadata, error) {
 
 	var metadata []Metadata
 
-	c.OnHTML("table tr td:nth-of-type(1) a:nth-of-type(2)", func(e *colly.HTMLElement) {
+	c.OnHTML("table tbody tr", func(e *colly.HTMLElement) {
 		metadata = append(metadata, Metadata{
-			Name: e.Text,
-			Hash: e.Attr("href"),
+			Name:    e.ChildText(".name a:nth-of-type(2)"),
+			Hash:    e.ChildAttr(".name a:nth-of-type(2)", "href"),
+			Seeders: e.ChildText(".seeds"),
+			Size:    e.ChildText(".size"),
 		})
 	})
 
 	c.Visit(fmt.Sprintf("https://www.1337xx.to/search/%s/1/", url.QueryEscape(search)))
-
 	return metadata, nil
 }
 
