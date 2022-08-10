@@ -43,7 +43,7 @@ func (d PirateCommand) Execute() error {
 	interactionCallback := utils.CreateInteractionCallback()
 	selectComponent := utils.CreateSelectComponent(site, "test")
 
-	for i, resultItem := range result[0:utils.Min(len(result), 10)] {
+	for i, resultItem := range result[0:utils.Min(len(result), 20)] {
 
 		selectComponent.AddOption(
 			utils.CreateOption(
