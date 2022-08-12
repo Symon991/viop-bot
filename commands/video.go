@@ -17,7 +17,7 @@ type VideoCommand struct {
 
 func (d VideoCommand) Execute() error {
 
-	parameters := []string{"https://www.youtube.com/watch?v=gW-N7AHl7dI", "--download-sections", "*00:10-00:15", "-v", "-o", "-"}
+	parameters := []string{d.interactionCreate.D.Data.Options[0].Value.(string), "--download-sections", d.interactionCreate.D.Data.Options[1].Value.(string), "-v", "-o", "-"}
 	cmd := exec.Command("yt-dlp", parameters...)
 	cmd2 := exec.Command("ffmpeg", "-i", "pipe:0", "-f", "webm", "pipe:1")
 
