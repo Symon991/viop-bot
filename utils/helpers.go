@@ -38,6 +38,13 @@ func CreateEmbed(title string, description string) *EmbedBuilder {
 	}
 }
 
+func CreateEmbedVideo(url string) *EmbedBuilder {
+
+	return &EmbedBuilder{
+		Video: messages.Video{URL: url},
+	}
+}
+
 func CreateAttachment(id int, description string, filename string) *AttachmentBuilder {
 	return &AttachmentBuilder{
 		ID:          id,

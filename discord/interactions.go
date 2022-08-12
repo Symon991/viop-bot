@@ -37,7 +37,7 @@ func PostInteractionCallback(id string, token string, interactionCallbackPayload
 
 func PostInteractionFile(id string, token string, fileBytes []byte) error {
 
-	interaction := utils.CreateInteractionCallback().AddAttachment(utils.CreateAttachment(0, "video", "video.webm"))
+	interaction := utils.CreateInteractionCallback().AddAttachment(utils.CreateAttachment(0, "video", "video.webm")).AddEmbed(utils.CreateEmbedVideo("attachment://video.webm"))
 
 	//callback := fmt.Sprintf(discordCallbackTemplateUrl, id, token)
 

@@ -152,6 +152,11 @@ type Embed struct {
 	Image struct {
 		URL string `json:"url"`
 	} `json:"image"`
+	Video Video `json:"video"`
+}
+
+type Video struct {
+	URL string `json:"url"`
 }
 
 type Field struct {
