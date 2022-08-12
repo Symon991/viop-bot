@@ -19,7 +19,7 @@ func (d VideoCommand) Execute() error {
 	cmd.Stderr = os.Stdout
 	cmd.Stdout = os.Stdout
 
-	cmd.Run()
+	fmt.Println(cmd.Output())
 
 	return nil
 }
