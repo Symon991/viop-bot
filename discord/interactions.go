@@ -52,7 +52,7 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 	writer := multipart.NewWriter(&body)
 
 	log.Println("write content")
-	contentWriter, err := writer.CreatePart("json_payload")
+	contentWriter, err := writer.CreateFormField("payload_json")
 	if err != nil {
 		return fmt.Errorf("create form: %w", err)
 	}
