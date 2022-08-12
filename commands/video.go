@@ -14,7 +14,7 @@ func (d VideoCommand) Execute() error {
 
 	cmd := exec.Command("ffmpeg")
 	fmt.Println(cmd.String())
-	fmt.Println(cmd.Output())
+	fmt.Println(cmd.CombinedOutput())
 
 	return nil
 }
