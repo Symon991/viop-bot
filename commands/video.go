@@ -3,6 +3,7 @@ package commands
 import (
 	"bot/discord"
 	"bot/discord/messages"
+	"bot/utils"
 	"bytes"
 	"fmt"
 	"io"
@@ -16,6 +17,11 @@ type VideoCommand struct {
 }
 
 func (d VideoCommand) Execute() error {
+
+	interactionCallback := utils.CreateInteractionCallback().
+		AddContent("Will do, bro.")
+
+	discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
 
 	parameters := []string{d.interactionCreate.D.Data.Options[0].Value.(string), "--download-sections", d.interactionCreate.D.Data.Options[1].Value.(string), "-v", "-o", "-"}
 	cmd := exec.Command("yt-dlp", parameters...)
@@ -45,7 +51,7 @@ func (d VideoCommand) Execute() error {
 
 	log.Print("finished encoding")
 
-	discord.PostInteractionFile(d.interactionCreate.D.ID, d.interactionCreate.D.Token, buff.Bytes())
+	discord.PostInteractionFile(d.interactionCreate.D.ApplicationID, d.interactionCreate.D.Token, buff.Bytes())
 
 	return nil
 }

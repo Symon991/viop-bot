@@ -39,7 +39,7 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 
 	interaction := utils.CreateInteractionCallback().AddAttachment(utils.CreateAttachment(0, "video", "video.mp4")).AddEmbed(utils.CreateEmbedVideo("attachment://video.mp4"))
 
-	//callback := fmt.Sprintf(discordCallbackTemplateUrl, id, token)
+	callback := fmt.Sprintf(discordFollowUpTemplateUrl, id, token)
 
 	payloadJsonBytes, err := json.Marshal(interaction.Get())
 	if err != nil {
@@ -77,7 +77,7 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 
 	log.Println("writer closed")
 
-	request, err := http.NewRequest("POST", discordPostChannelBotInfoUrl, bytes.NewReader(body.Bytes()))
+	request, err := http.NewRequest("POST", callback, bytes.NewReader(body.Bytes()))
 	if err != nil {
 		return fmt.Errorf("request create: %w", err)
 	}
