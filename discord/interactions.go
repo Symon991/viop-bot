@@ -37,7 +37,7 @@ func PostInteractionCallback(id string, token string, interactionCallbackPayload
 
 func PostInteractionFile(id string, token string, fileBytes []byte) error {
 
-	interaction := utils.CreateInteractionCallback().AddAttachment(utils.CreateAttachment(0, "video", "video.webm")).AddEmbed(utils.CreateEmbedVideo("attachment://video.webm"))
+	interaction := utils.CreateInteractionCallback().AddAttachment(utils.CreateAttachment(0, "video", "video.mp4")).AddEmbed(utils.CreateEmbedVideo("attachment://video.mp4"))
 
 	//callback := fmt.Sprintf(discordCallbackTemplateUrl, id, token)
 
@@ -61,7 +61,7 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 	contentWriter.Write(payloadJsonBytes)
 
 	log.Println("write file")
-	fileWriter, err := writer.CreateFormFile("files[0]", "video.webm")
+	fileWriter, err := writer.CreateFormFile("files[0]", "video.mp4")
 	if err != nil {
 		return fmt.Errorf("create form file: %w", err)
 	}
