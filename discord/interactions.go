@@ -9,6 +9,7 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
+	"os"
 )
 
 func PostInteractionCallback(id string, token string, interactionCallbackPayload *messages.InteractionCallback) error {
@@ -55,6 +56,7 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 	}
 
 	request.Header.Set("Content-Type", writer.FormDataContentType())
+	request.Header.Set("Authorization", fmt.Sprintf("Bot %s", os.Getenv("DISCORD_APPLICATION_ID")))
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
