@@ -142,17 +142,17 @@ type Data struct {
 }
 
 type Embed struct {
-	Title       string  `json:"title"`
-	Description string  `json:"description"`
-	Type        string  `json:"type"`
-	Fields      []Field `json:"fields"`
+	Title       string  `json:"title,omitempty"`
+	Description string  `json:"description,omitempty"`
+	Type        string  `json:"type,omitempty"`
+	Fields      []Field `json:"fields,omitempty"`
 	Thumbnail   struct {
-		URL string `json:"url"`
-	} `json:"thumbnail"`
+		URL string `json:"url,omitempty"`
+	} `json:"thumbnail,omitempty"`
 	Image struct {
-		URL string `json:"url"`
-	} `json:"image"`
-	Video Video `json:"video"`
+		URL string `json:"url,omitempty"`
+	} `json:"image,omitempty"`
+	Video Video `json:"video,omitempty"`
 }
 
 type Video struct {

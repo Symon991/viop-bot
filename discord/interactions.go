@@ -58,7 +58,6 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 	if err != nil {
 		return fmt.Errorf("create form: %w", err)
 	}
-	io.WriteString(contentWriter, "Content-Type: application/json")
 	contentWriter.Write(payloadJsonBytes)
 
 	log.Println("write file")
