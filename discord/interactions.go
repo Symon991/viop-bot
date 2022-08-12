@@ -41,7 +41,7 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 
 	//callback := fmt.Sprintf(discordCallbackTemplateUrl, id, token)
 
-	payloadJsonBytes, err := json.Marshal(interaction)
+	payloadJsonBytes, err := json.Marshal(interaction.Get())
 	if err != nil {
 		return fmt.Errorf("marshal payload: %w", err)
 	}
