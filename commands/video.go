@@ -28,6 +28,7 @@ func (d VideoCommand) Execute() error {
 	cmd2.Stdin, _ = cmd.StdoutPipe()
 
 	cmd2.Stdout = w
+	cmd.Stderr = os.Stdout
 	cmd2.Stderr = os.Stdout
 
 	var buff bytes.Buffer
