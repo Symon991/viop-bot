@@ -35,6 +35,8 @@ func HandleInteraction(message []byte) error {
 		c = &CountdownCommand{interactionCreate}
 	case "mudtime":
 		c = &MudTimeCommand{interactionCreate}
+	case "video":
+		c = &VideoCommand{interactionCreate}
 	default:
 		return fmt.Errorf("command not found")
 	}
