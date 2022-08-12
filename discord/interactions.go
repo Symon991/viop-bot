@@ -69,7 +69,10 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 		return fmt.Errorf("request create: %w", err)
 	}
 
-	writer.Close()
+	err = writer.Close()
+	if err != nil {
+		return fmt.Errorf("close writer: %w", err)
+	}
 
 	request.Header.Set("Content-Type", writer.FormDataContentType())
 	request.Header.Set("Authorization", fmt.Sprintf("Bot %s", os.Getenv("DISCORD_APPLICATION_ID")))
