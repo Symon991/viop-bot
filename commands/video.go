@@ -12,7 +12,7 @@ type VideoCommand struct {
 
 func (d VideoCommand) Execute() error {
 
-	cmd := exec.Command("yt-dlp")
+	cmd := exec.Command("ffmpeg")
 	fmt.Println(cmd.String())
 	fmt.Println(cmd.Output())
 
