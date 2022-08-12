@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"mime/multipart"
 	"net/http"
 )
 
@@ -28,6 +29,37 @@ func PostInteractionCallback(id string, token string, interactionCallbackPayload
 
 	body, _ := io.ReadAll(response.Body)
 	log.Printf("%s\n\n", string(body))
+
+	return nil
+}
+
+func PostInteractionFile(id string, token string, fileBytes []byte) error {
+
+	callback := fmt.Sprintf(discordCallbackTemplateUrl, id, token)
+	body := bytes.Buffer{}
+	writer := multipart.NewWriter(&body)
+
+	fileWriter, err := writer.CreateFormFile("files[0]", "video.webm")
+	if err != nil {
+		return fmt.Errorf("create form: %w", err)
+	}
+
+	_, err = fileWriter.Write(fileBytes)
+	if err != nil {
+		return fmt.Errorf("write file form: %w", err)
+	}
+
+	request, err := http.NewRequest("POST", callback, bytes.NewReader(body.Bytes()))
+	if err != nil {
+		return fmt.Errorf("request create: %w", err)
+	}
+
+	request.Header.Set("Content-Type", writer.FormDataContentType())
+
+	_, err = http.DefaultClient.Do(request)
+	if err != nil {
+		return fmt.Errorf("request create: %w", err)
+	}
 
 	return nil
 }
