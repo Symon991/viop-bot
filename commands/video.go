@@ -19,7 +19,7 @@ func (d VideoCommand) Execute() error {
 
 	parameters := []string{"https://www.youtube.com/watch?v=gW-N7AHl7dI", "--download-sections", "*00:10-00:15", "-v", "-o", "-"}
 	cmd := exec.Command("yt-dlp", parameters...)
-	cmd2 := exec.Command("ffmpeg.exe", "-i", "pipe:0", "-f", "webm", "pipe:1")
+	cmd2 := exec.Command("ffmpeg", "-i", "pipe:0", "-f", "webm", "pipe:1")
 
 	fmt.Println(cmd.String())
 
