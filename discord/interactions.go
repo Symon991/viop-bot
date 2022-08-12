@@ -49,7 +49,7 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 	}
 	io.WriteString(contentWriter, "test")
 
-	/*log.Println("write file")
+	log.Println("write file")
 	fileWriter, err := writer.CreateFormFile("files[0]", "video.webm")
 	if err != nil {
 		return fmt.Errorf("create form file: %w", err)
@@ -57,7 +57,7 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 	_, err = fileWriter.Write(fileBytes)
 	if err != nil {
 		return fmt.Errorf("write file form: %w", err)
-	}*/
+	}
 
 	err = writer.Close()
 	if err != nil {
