@@ -4,6 +4,7 @@ import (
 	"bot/discord"
 	"bot/discord/messages"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 )
@@ -24,6 +25,8 @@ func (d VideoCommand) Execute() error {
 	if err != nil {
 		fmt.Printf("%s", err)
 	}
+
+	log.Print("finished encoding")
 
 	discord.PostInteractionFile(d.interactionCreate.D.ID, d.interactionCreate.D.Token, bytes)
 

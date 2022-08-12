@@ -56,10 +56,15 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 
 	request.Header.Set("Content-Type", writer.FormDataContentType())
 
-	_, err = http.DefaultClient.Do(request)
+	response, err := http.DefaultClient.Do(request)
 	if err != nil {
 		return fmt.Errorf("request create: %w", err)
 	}
+
+	defer response.Body.Close()
+
+	responseBody, _ := io.ReadAll(response.Body)
+	log.Printf("%s", string(responseBody))
 
 	return nil
 }
