@@ -42,8 +42,14 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 
 	fileWriter, err := writer.CreateFormFile("files[0]", "video.webm")
 	if err != nil {
+		return fmt.Errorf("create form file: %w", err)
+	}
+
+	contentWriter, err := writer.CreateFormField("content")
+	if err != nil {
 		return fmt.Errorf("create form: %w", err)
 	}
+	io.WriteString(contentWriter, "test")
 
 	_, err = fileWriter.Write(fileBytes)
 	if err != nil {
@@ -54,6 +60,8 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 	if err != nil {
 		return fmt.Errorf("request create: %w", err)
 	}
+
+	writer.Close()
 
 	request.Header.Set("Content-Type", writer.FormDataContentType())
 	request.Header.Set("Authorization", fmt.Sprintf("Bot %s", os.Getenv("DISCORD_APPLICATION_ID")))
