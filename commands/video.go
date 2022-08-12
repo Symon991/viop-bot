@@ -14,7 +14,7 @@ type VideoCommand struct {
 func (d VideoCommand) Execute() error {
 
 	parameters := []string{"https://www.youtube.com/watch?v=gW-N7AHl7dI", "--download-sections", "*00:10-00:15", "-v", "-o", "-"}
-	cmd := exec.Command("yt-dlp.exe", parameters...)
+	cmd := exec.Command("yt-dlp", parameters...)
 	fmt.Println(cmd.String())
 
 	bytes, err := cmd.Output()
