@@ -3,7 +3,9 @@ package commands
 import (
 	"bot/discord"
 	"bot/discord/messages"
+	"bytes"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -17,18 +19,32 @@ func (d VideoCommand) Execute() error {
 
 	parameters := []string{"https://www.youtube.com/watch?v=gW-N7AHl7dI", "--download-sections", "*00:10-00:15", "-v", "-o", "-"}
 	cmd := exec.Command("yt-dlp", parameters...)
+	cmd2 := exec.Command("ffmpeg.exe", "-i", "pipe:0", "-f", "webm", "pipe:1")
+
 	fmt.Println(cmd.String())
 
-	cmd.Stderr = os.Stdout
+	r, w := io.Pipe()
 
-	bytes, err := cmd.Output()
-	if err != nil {
-		fmt.Printf("%s", err)
-	}
+	cmd2.Stdin, _ = cmd.StdoutPipe()
+
+	cmd2.Stdout = w
+	cmd2.Stderr = os.Stdout
+
+	var buff bytes.Buffer
+
+	go func() {
+		io.Copy(&buff, r)
+	}()
+
+	cmd2.Start()
+
+	cmd.Run()
+
+	cmd2.Wait()
 
 	log.Print("finished encoding")
 
-	discord.PostInteractionFile(d.interactionCreate.D.ID, d.interactionCreate.D.Token, bytes)
+	discord.PostInteractionFile(d.interactionCreate.D.ID, d.interactionCreate.D.Token, buff.Bytes())
 
 	return nil
 }
