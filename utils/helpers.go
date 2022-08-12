@@ -8,6 +8,7 @@ type OptionBuilder messages.Option
 type ComponentBuilder messages.Component
 type ActionRowComponentBuilder messages.Components
 type FieldBuilder messages.Field
+type AttachmentBuilder messages.Attachment
 
 func CreateInteractionCallback() *InteractionCallbackBuilder {
 
@@ -34,6 +35,14 @@ func CreateEmbed(title string, description string) *EmbedBuilder {
 	return &EmbedBuilder{
 		Title:       title,
 		Description: description,
+	}
+}
+
+func CreateAttachment(id int, description string, filename string) *AttachmentBuilder {
+	return &AttachmentBuilder{
+		ID:          id,
+		Description: description,
+		FileName:    filename,
 	}
 }
 
@@ -89,6 +98,12 @@ func (builder *InteractionCallbackBuilder) AddEmbed(embed *EmbedBuilder) *Intera
 	return builder
 }
 
+func (builder *InteractionCallbackBuilder) AddAttachment(attachment *AttachmentBuilder) *InteractionCallbackBuilder {
+
+	builder.Data.Attachments = append(builder.Data.Attachments, *attachment.Get())
+	return builder
+}
+
 func (builder *InteractionCallbackBuilder) AddActionRowComponent(component *ActionRowComponentBuilder) *InteractionCallbackBuilder {
 
 	builder.Data.Components = append(builder.Data.Components, *component.Get())
@@ -121,6 +136,11 @@ func (builder *InteractionCallbackBuilder) Get() *messages.InteractionCallback {
 func (builder *EmbedBuilder) Get() *messages.Embed {
 
 	return (*messages.Embed)(builder)
+}
+
+func (builder *AttachmentBuilder) Get() *messages.Attachment {
+
+	return (*messages.Attachment)(builder)
 }
 
 func (builder *ActionRowComponentBuilder) Get() *messages.Components {

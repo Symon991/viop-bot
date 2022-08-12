@@ -2,6 +2,7 @@ package discord
 
 import (
 	"bot/discord/messages"
+	"bot/utils"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -36,18 +37,26 @@ func PostInteractionCallback(id string, token string, interactionCallbackPayload
 
 func PostInteractionFile(id string, token string, fileBytes []byte) error {
 
+	interaction := utils.CreateInteractionCallback().AddAttachment(utils.CreateAttachment(0, "video", "video.webm"))
+
 	//callback := fmt.Sprintf(discordCallbackTemplateUrl, id, token)
+
+	payloadJsonBytes, err := json.Marshal(interaction)
+	if err != nil {
+		return fmt.Errorf("marshal payload: %w", err)
+	}
+
 	log.Println("post interaction file")
 
 	body := bytes.Buffer{}
 	writer := multipart.NewWriter(&body)
 
 	log.Println("write content")
-	contentWriter, err := writer.CreateFormField("content")
+	contentWriter, err := writer.CreatePart("json_payload")
 	if err != nil {
 		return fmt.Errorf("create form: %w", err)
 	}
-	io.WriteString(contentWriter, "test")
+	contentWriter.Write(payloadJsonBytes)
 
 	log.Println("write file")
 	fileWriter, err := writer.CreateFormFile("files[0]", "video.webm")

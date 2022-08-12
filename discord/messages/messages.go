@@ -135,9 +135,10 @@ type InteractionCallback struct {
 }
 
 type Data struct {
-	Content    string       `json:"content"`
-	Embeds     []Embed      `json:"embeds"`
-	Components []Components `json:"components"`
+	Content     string       `json:"content"`
+	Embeds      []Embed      `json:"embeds"`
+	Components  []Components `json:"components"`
+	Attachments []Attachment `json:"attachments"`
 }
 
 type Embed struct {
@@ -156,6 +157,12 @@ type Embed struct {
 type Field struct {
 	Name  string `json:"name"`
 	Value string `json:"value"`
+}
+
+type Attachment struct {
+	ID          int    `json:"id"`
+	Description string `json:"description"`
+	FileName    string `json:"filename"`
 }
 
 type AllowedMention struct {
