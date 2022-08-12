@@ -35,7 +35,7 @@ func PostInteractionCallback(id string, token string, interactionCallbackPayload
 
 func PostInteractionFile(id string, token string, fileBytes []byte) error {
 
-	callback := fmt.Sprintf(discordCallbackTemplateUrl, id, token)
+	//callback := fmt.Sprintf(discordCallbackTemplateUrl, id, token)
 	body := bytes.Buffer{}
 	writer := multipart.NewWriter(&body)
 
@@ -49,7 +49,7 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 		return fmt.Errorf("write file form: %w", err)
 	}
 
-	request, err := http.NewRequest("POST", callback, bytes.NewReader(body.Bytes()))
+	request, err := http.NewRequest("POST", discordPostChannelBotInfoUrl, bytes.NewReader(body.Bytes()))
 	if err != nil {
 		return fmt.Errorf("request create: %w", err)
 	}
