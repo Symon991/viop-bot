@@ -42,40 +42,39 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 	body := bytes.Buffer{}
 	writer := multipart.NewWriter(&body)
 
-	fileWriter, err := writer.CreateFormFile("files[0]", "video.webm")
-	if err != nil {
-		return fmt.Errorf("create form file: %w", err)
-	}
-	contentWriter, err := writer.CreateFormField("content")
-
 	log.Println("write content")
-
+	contentWriter, err := writer.CreateFormField("content")
 	if err != nil {
 		return fmt.Errorf("create form: %w", err)
 	}
 	io.WriteString(contentWriter, "test")
 
-	log.Println("write file")
-
+	/*log.Println("write file")
+	fileWriter, err := writer.CreateFormFile("files[0]", "video.webm")
+	if err != nil {
+		return fmt.Errorf("create form file: %w", err)
+	}
 	_, err = fileWriter.Write(fileBytes)
 	if err != nil {
 		return fmt.Errorf("write file form: %w", err)
-	}
-
-	log.Println("request")
-
-	request, err := http.NewRequest("POST", discordPostChannelBotInfoUrl, bytes.NewReader(body.Bytes()))
-	if err != nil {
-		return fmt.Errorf("request create: %w", err)
-	}
+	}*/
 
 	err = writer.Close()
 	if err != nil {
 		return fmt.Errorf("close writer: %w", err)
 	}
 
+	log.Println("writer closed")
+
+	request, err := http.NewRequest("POST", discordPostChannelBotInfoUrl, bytes.NewReader(body.Bytes()))
+	if err != nil {
+		return fmt.Errorf("request create: %w", err)
+	}
+
 	request.Header.Set("Content-Type", writer.FormDataContentType())
 	request.Header.Set("Authorization", fmt.Sprintf("Bot %s", os.Getenv("DISCORD_APPLICATION_ID")))
+
+	log.Println("request")
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
