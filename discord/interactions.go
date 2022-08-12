@@ -46,6 +46,8 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 		return fmt.Errorf("marshal payload: %w", err)
 	}
 
+	log.Printf("%s", payloadJsonBytes)
+
 	log.Println("post interaction file")
 
 	body := bytes.Buffer{}
