@@ -35,11 +35,11 @@ func PostInteractionCallback(id string, token string, interactionCallbackPayload
 	return nil
 }
 
-func PostInteractionFile(id string, token string, fileBytes []byte) error {
+func PostInteractionFile(token string, fileBytes []byte) error {
 
 	interaction := utils.CreateInteractionCallback().AddAttachment(utils.CreateAttachment(0, "video", "video.mp4")).AddEmbed(utils.CreateEmbedVideo("attachment://video.mp4"))
 
-	callback := fmt.Sprintf(discordFollowUpTemplateUrl, id, token)
+	callback := fmt.Sprintf(discordFollowUpTemplateUrl, os.Getenv("DISCORD_APPLICATION_ID"), token)
 
 	payloadJsonBytes, err := json.Marshal(interaction.Get())
 	if err != nil {
@@ -83,7 +83,7 @@ func PostInteractionFile(id string, token string, fileBytes []byte) error {
 	}
 
 	request.Header.Set("Content-Type", writer.FormDataContentType())
-	request.Header.Set("Authorization", fmt.Sprintf("Bot %s", os.Getenv("DISCORD_APPLICATION_ID")))
+	request.Header.Set("Authorization", fmt.Sprintf("Bot %s", os.Getenv("DISCORD_BEARER_TOKEN")))
 
 	log.Println("request")
 

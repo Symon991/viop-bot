@@ -49,7 +49,7 @@ func startDiscord(errorChan chan error) *websocket.Conn {
 		log.Panic(err)
 	}
 	discord.Heartbeat(interval, conn, errorChan)
-	discord.Identify(conn, os.Getenv("DISCORD_APPLICATION_ID"))
+	discord.Identify(conn, os.Getenv("DISCORD_BEARER_TOKEN"))
 	go discord.Listen(conn, commands.HandleInteraction, errorChan)
 	return conn
 }

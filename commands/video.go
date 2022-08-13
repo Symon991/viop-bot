@@ -51,7 +51,7 @@ func (d VideoCommand) Execute() error {
 
 	log.Print("finished encoding")
 
-	discord.PostInteractionFile("992508089460863037", d.interactionCreate.D.Token, buff.Bytes())
+	discord.PostInteractionFile(d.interactionCreate.D.Token, buff.Bytes())
 
 	return nil
 }
