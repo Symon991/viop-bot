@@ -53,7 +53,7 @@ func (d VideoCommand) Execute() error {
 		d.interactionCreate.D.Token,
 		buff.Bytes(),
 		fmt.Sprintf(
-			"%s-%s",
+			"%s-%s.webm",
 			codeFromLink(ytLinkString),
 			strings.ReplaceAll(strings.ReplaceAll(rangeString, "*", ""), ":", "")),
 		interaction)
