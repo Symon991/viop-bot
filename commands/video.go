@@ -48,7 +48,7 @@ func (d VideoCommand) Execute() error {
 	ytCommand.Run()
 	ffmpegCommand.Wait()
 
-	interaction := utils.CreateInteractionCallback().AddContent(fmt.Sprintf("[%s][%s]", ytLinkString, ytCommand))
+	interaction := utils.CreateInteractionCallback().AddContent(fmt.Sprintf("[%s][%s]", ytLinkString, rangeString))
 
 	discord.PostFollowUpWithFile(
 		d.interactionCreate.D.Token,

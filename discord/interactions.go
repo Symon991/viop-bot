@@ -51,6 +51,8 @@ func PostFollowUpWithFile(token string, fileBytes []byte, filename string, inter
 		return fmt.Errorf("marshal payload: %w", err)
 	}
 
+	log.Printf("debug payload : %s", payloadJsonBytes)
+
 	body := bytes.Buffer{}
 	writer := multipart.NewWriter(&body)
 
