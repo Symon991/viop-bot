@@ -15,7 +15,7 @@ const discordSocketUrl = "wss://gateway.discord.gg/?v=10&encoding=json"
 const discordCallbackTemplateUrl = "https://discord.com/api/v10/interactions/%s/%s/callback"
 const discordGetCallbackTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/messages/@original"
 const discordEditCallbackTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/messages/@original"
-const discordFollowUpTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s/"
+const discordFollowUpTemplateUrl = "https://discord.com/api/v10/webhooks/%s/%s"
 const discordPostChannelBotInfoUrl = "https://discord.com/api/v10/channels/1003011209848701068/messages"
 
 func Identify(conn *websocket.Conn, appId string) {
