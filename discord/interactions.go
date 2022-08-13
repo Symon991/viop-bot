@@ -10,6 +10,7 @@ import (
 	"log"
 	"mime/multipart"
 	"net/http"
+	"net/textproto"
 	"os"
 )
 
@@ -53,7 +54,11 @@ func PostFollowUpWithFile(token string, fileBytes []byte, filename string, inter
 	body := bytes.Buffer{}
 	writer := multipart.NewWriter(&body)
 
-	contentWriter, err := writer.CreateFormField("payload_json")
+	mime := textproto.MIMEHeader{}
+	mime.Set("Content-Disposition", "form-data; name=\"payload_json\"")
+	mime.Set("Content-Type", "application/json")
+
+	contentWriter, err := writer.CreatePart(mime)
 	if err != nil {
 		return fmt.Errorf("create form: %w", err)
 	}

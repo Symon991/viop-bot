@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"net/url"
 	"os"
 	"os/exec"
 	"strings"
@@ -63,11 +64,11 @@ func (d VideoCommand) Execute() error {
 
 func codeFromLink(link string) string {
 
-	i := strings.LastIndex(link, "/")
-	if i == -1 {
-		return link
+	parsed, err := url.Parse(link)
+	if err == nil {
+		return parsed.Query().Get("v")
 	}
-	return link[i:]
+	return link
 }
 
 func (d VideoCommand) Respond() error {
