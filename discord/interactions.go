@@ -46,7 +46,7 @@ func PostFollowUpWithFile(token string, fileBytes []byte, filename string, inter
 
 	callback := fmt.Sprintf(discordFollowUpTemplateUrl, os.Getenv("DISCORD_APPLICATION_ID"), token)
 
-	payloadJsonBytes, err := json.Marshal(interaction.Get())
+	payloadJsonBytes, err := json.Marshal(interaction.Get().Data)
 	if err != nil {
 		return fmt.Errorf("marshal payload: %w", err)
 	}
