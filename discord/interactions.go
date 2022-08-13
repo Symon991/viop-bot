@@ -35,9 +35,13 @@ func PostInteractionCallback(id string, token string, interactionCallbackPayload
 	return nil
 }
 
-func PostInteractionFile(token string, fileBytes []byte) error {
+func PostFollowUpWithFile(token string, fileBytes []byte, filename string, interaction *utils.InteractionCallbackBuilder) error {
 
-	interaction := utils.CreateInteractionCallback().AddAttachment(utils.CreateAttachment(0, "video", "video.mp4")).AddEmbed(utils.CreateEmbedVideo("attachment://video.mp4"))
+	interaction.
+		AddAttachment(
+			utils.CreateAttachment(0, "video", filename)).
+		AddEmbed(
+			utils.CreateEmbedVideo(fmt.Sprintf("attachment://%s", filename)))
 
 	callback := fmt.Sprintf(discordFollowUpTemplateUrl, os.Getenv("DISCORD_APPLICATION_ID"), token)
 
@@ -46,22 +50,16 @@ func PostInteractionFile(token string, fileBytes []byte) error {
 		return fmt.Errorf("marshal payload: %w", err)
 	}
 
-	log.Printf("%s", payloadJsonBytes)
-
-	log.Println("post interaction file")
-
 	body := bytes.Buffer{}
 	writer := multipart.NewWriter(&body)
 
-	log.Println("write content")
 	contentWriter, err := writer.CreateFormField("payload_json")
 	if err != nil {
 		return fmt.Errorf("create form: %w", err)
 	}
 	contentWriter.Write(payloadJsonBytes)
 
-	log.Println("write file")
-	fileWriter, err := writer.CreateFormFile("files[0]", "video.mp4")
+	fileWriter, err := writer.CreateFormFile("files[0]", filename)
 	if err != nil {
 		return fmt.Errorf("create form file: %w", err)
 	}
@@ -75,8 +73,6 @@ func PostInteractionFile(token string, fileBytes []byte) error {
 		return fmt.Errorf("close writer: %w", err)
 	}
 
-	log.Println("writer closed")
-
 	request, err := http.NewRequest("POST", callback, bytes.NewReader(body.Bytes()))
 	if err != nil {
 		return fmt.Errorf("request create: %w", err)
@@ -84,8 +80,6 @@ func PostInteractionFile(token string, fileBytes []byte) error {
 
 	request.Header.Set("Content-Type", writer.FormDataContentType())
 	request.Header.Set("Authorization", fmt.Sprintf("Bot %s", os.Getenv("DISCORD_BEARER_TOKEN")))
-
-	log.Println("request")
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {

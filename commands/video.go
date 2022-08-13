@@ -7,9 +7,9 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 type VideoCommand struct {
@@ -18,42 +18,56 @@ type VideoCommand struct {
 
 func (d VideoCommand) Execute() error {
 
+	ytLinkString := d.interactionCreate.D.Data.Options[0].Value.(string)
+	rangeString := d.interactionCreate.D.Data.Options[1].Value.(string)
+
 	interactionCallback := utils.CreateInteractionCallback().
 		AddContent("Will do, bro.")
 
 	discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
 
-	parameters := []string{d.interactionCreate.D.Data.Options[0].Value.(string), "--download-sections", d.interactionCreate.D.Data.Options[1].Value.(string), "-v", "-o", "-"}
-	cmd := exec.Command("yt-dlp", parameters...)
-	cmd2 := exec.Command("ffmpeg", "-i", "pipe:0", "-f", "webm", "pipe:1")
-
-	fmt.Println(cmd.String())
+	parameters := []string{ytLinkString, "--download-sections", rangeString, "-v", "-o", "-"}
+	ytCommand := exec.Command("yt-dlp", parameters...)
+	ffmpegCommand := exec.Command("ffmpeg", "-i", "pipe:0", "-f", "webm", "pipe:1")
 
 	r, w := io.Pipe()
 
-	cmd2.Stdin, _ = cmd.StdoutPipe()
+	ffmpegCommand.Stdin, _ = ytCommand.StdoutPipe()
+	ffmpegCommand.Stdout = w
+	ffmpegCommand.Stderr = os.Stdout
 
-	cmd2.Stdout = w
-	cmd.Stderr = os.Stdout
-	cmd2.Stderr = os.Stdout
+	ytCommand.Stderr = os.Stdout
 
 	var buff bytes.Buffer
-
 	go func() {
 		io.Copy(&buff, r)
 	}()
 
-	cmd2.Start()
+	ffmpegCommand.Start()
+	ytCommand.Run()
+	ffmpegCommand.Wait()
 
-	cmd.Run()
+	interaction := utils.CreateInteractionCallback().AddContent(fmt.Sprintf("[%s][%s]", ytLinkString, ytCommand))
 
-	cmd2.Wait()
-
-	log.Print("finished encoding")
-
-	discord.PostInteractionFile(d.interactionCreate.D.Token, buff.Bytes())
+	discord.PostFollowUpWithFile(
+		d.interactionCreate.D.Token,
+		buff.Bytes(),
+		fmt.Sprintf(
+			"%s-%s",
+			codeFromLink(ytLinkString),
+			strings.ReplaceAll(strings.ReplaceAll(rangeString, "*", ""), ":", "")),
+		interaction)
 
 	return nil
+}
+
+func codeFromLink(link string) string {
+
+	i := strings.LastIndex(link, "/")
+	if i == -1 {
+		return link
+	}
+	return link[i:]
 }
 
 func (d VideoCommand) Respond() error {
