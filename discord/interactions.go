@@ -40,9 +40,7 @@ func PostFollowUpWithFile(token string, fileBytes []byte, filename string, inter
 
 	interaction.
 		AddAttachment(
-			utils.CreateAttachment(0, "video", filename)).
-		AddEmbed(
-			utils.CreateEmbedVideo(fmt.Sprintf("attachment://%s", filename)))
+			utils.CreateAttachment(0, "video", filename))
 
 	callback := fmt.Sprintf(discordFollowUpTemplateUrl, os.Getenv("DISCORD_APPLICATION_ID"), token)
 
