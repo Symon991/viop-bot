@@ -4,9 +4,7 @@ import (
 	"bot/discord"
 	"bot/discord/messages"
 	"bot/utils"
-	"bytes"
 	"fmt"
-	"io"
 	"net/url"
 	"os"
 	"os/exec"
@@ -27,32 +25,20 @@ func (d VideoCommand) Execute() error {
 
 	discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
 
-	parameters := []string{ytLinkString, "--download-sections", rangeString, "--force-keyframes-at-cuts", "-v", "-o", "-"}
+	parameters := []string{ytLinkString, "-f", "best[height=720]", "--downloader-args", "ffmpeg_o:-f webm", "--download-sections", rangeString, "--force-keyframes-at-cuts", "-v", "-o", "-"}
 	ytCommand := exec.Command("yt-dlp", parameters...)
-	ffmpegCommand := exec.Command("ffmpeg", "-i", "pipe:0", "-f", "webm", "pipe:1")
-
-	r, w := io.Pipe()
-
-	ffmpegCommand.Stdin, _ = ytCommand.StdoutPipe()
-	ffmpegCommand.Stdout = w
-	ffmpegCommand.Stderr = os.Stdout
 
 	ytCommand.Stderr = os.Stdout
-
-	var buff bytes.Buffer
-	go func() {
-		io.Copy(&buff, r)
-	}()
-
-	ffmpegCommand.Start()
-	ytCommand.Run()
-	ffmpegCommand.Wait()
+	outBytes, err := ytCommand.Output()
+	if err != nil {
+		return fmt.Errorf("run yt-dlp: %w", err)
+	}
 
 	interaction := utils.CreateInteractionCallback().AddContent("[Youtube]")
 
 	discord.PostFollowUpWithFile(
 		d.interactionCreate.D.Token,
-		buff.Bytes(),
+		outBytes,
 		fmt.Sprintf(
 			"%s-%s.webm",
 			codeFromLink(ytLinkString),
