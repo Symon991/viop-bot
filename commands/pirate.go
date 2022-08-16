@@ -63,7 +63,7 @@ func (d PirateCommand) Execute() error {
 		utils.CreateActionRowComponent().
 			AddComponent(selectComponent))
 
-	err = discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
+	_, err = discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
 	if err != nil {
 		return fmt.Errorf("post interaction callback: %w", err)
 	}
@@ -95,7 +95,7 @@ func (d PirateCommand) Respond() error {
 				cachePirateEntry.Metadata[index].Name[:utils.Min(len(cachePirateEntry.Metadata[index].Name), 100)],
 				fmt.Sprintf("`%s`", search.GetMagnet(cachePirateEntry.Metadata[index]))))
 
-	err = discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
+	_, err = discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
 	if err != nil {
 		return fmt.Errorf("post interaction callback: %w", err)
 	}

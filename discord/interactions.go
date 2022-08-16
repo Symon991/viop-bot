@@ -14,11 +14,11 @@ import (
 	"os"
 )
 
-func PostInteractionCallback(id string, token string, interactionCallbackPayload *messages.InteractionCallback) error {
+func PostInteractionCallback(id string, token string, interactionCallbackPayload *messages.InteractionCallback) (string, error) {
 
 	callbackPayload, err := json.Marshal(interactionCallbackPayload)
 	if err != nil {
-		return fmt.Errorf("marshal callback message: %s", err)
+		return "", fmt.Errorf("marshal callback message: %s", err)
 	}
 
 	callback := fmt.Sprintf(discordCallbackTemplateUrl, id, token)
@@ -26,14 +26,17 @@ func PostInteractionCallback(id string, token string, interactionCallbackPayload
 	log.Printf("%s\n\n", callbackPayload)
 	response, err := http.Post(callback, "application/json", bytes.NewBuffer(callbackPayload))
 	if err != nil {
-		return fmt.Errorf("post callback message: %s", err)
+		return "", fmt.Errorf("post callback message: %s", err)
 	}
 	defer response.Body.Close()
 
 	body, _ := io.ReadAll(response.Body)
 	log.Printf("%s\n\n", string(body))
 
-	return nil
+	var messageCreate messages.MessageCreate
+	json.Unmarshal(body, &messageCreate)
+
+	return messageCreate.ID, nil
 }
 
 func PostFollowUpWithFile(token string, fileBytes []byte, filename string, interaction *utils.InteractionCallbackBuilder) error {
@@ -156,6 +159,25 @@ func EditOriginalInteraction(appId string, token string, interactionCallbackPayl
 
 	request, _ := http.NewRequest("PATCH", callback, bytes.NewBuffer(callbackPayload))
 	request.Header.Set("Content-Type", "application/json")
+
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		return fmt.Errorf("post callback message: %s", err)
+	}
+	defer response.Body.Close()
+
+	body, _ := io.ReadAll(response.Body)
+	log.Printf("%s", string(body))
+
+	return nil
+}
+
+func DeleteOriginalInteraction(token string) error {
+
+	callback := fmt.Sprintf(deleteInitialResponseTemplateUrl, os.Getenv("DISCORD_APPLICATION_ID"), token)
+	log.Printf("%s\n\n", callback)
+
+	request, _ := http.NewRequest("DELETE", callback, nil)
 
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {

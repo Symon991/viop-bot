@@ -36,7 +36,12 @@ func (d VideoCommand) Execute() error {
 
 	interaction := utils.CreateInteractionCallback().AddContent("[Youtube]")
 
-	discord.PostFollowUpWithFile(
+	err = discord.DeleteOriginalInteraction(d.interactionCreate.D.Token)
+	if err != nil {
+		return fmt.Errorf("delete original interaction: %w", err)
+	}
+
+	err = discord.PostFollowUpWithFile(
 		d.interactionCreate.D.Token,
 		outBytes,
 		fmt.Sprintf(
@@ -44,6 +49,9 @@ func (d VideoCommand) Execute() error {
 			codeFromLink(ytLinkString),
 			strings.ReplaceAll(strings.ReplaceAll(rangeString, "*", ""), ":", "")),
 		interaction)
+	if err != nil {
+		return fmt.Errorf("post message: %w", err)
+	}
 
 	return nil
 }

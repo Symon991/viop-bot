@@ -51,6 +51,10 @@ type Resume struct {
 	} `json:"d"`
 }
 
+type MessageCreate struct {
+	ID string `json:"id"`
+}
+
 type InteractionCreate struct {
 	T  string `json:"t"`
 	S  int    `json:"s"`
