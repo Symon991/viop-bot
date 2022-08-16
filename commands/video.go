@@ -68,7 +68,7 @@ func codeFromLink(link string) string {
 	if err == nil {
 		return parsed.Query().Get("v")
 	}
-	index := strings.Index(link, "/")
+	index := strings.LastIndex(link, "/")
 	if index > -1 {
 		return link[index:]
 	}
