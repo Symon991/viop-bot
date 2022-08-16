@@ -68,7 +68,11 @@ func codeFromLink(link string) string {
 	if err == nil {
 		return parsed.Query().Get("v")
 	}
-	return link
+	index := strings.Index(link, "/")
+	if index > -1 {
+		return link[index:]
+	}
+	return ""
 }
 
 func (d VideoCommand) Respond() error {
