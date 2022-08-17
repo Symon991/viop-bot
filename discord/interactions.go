@@ -10,7 +10,7 @@ import (
 
 func PostInteractionResponse(id string, token string, interactionCallbackPayload *messages.InteractionCallback) (string, error) {
 
-	_, bodyResponse, err := client.DoPostObject(getInteractionsCallbackEndpoint(token), interactionCallbackPayload)
+	_, bodyResponse, err := client.DoPostObject(getInteractionsCallbackEndpoint(id, token), interactionCallbackPayload)
 	if err != nil {
 		return "", fmt.Errorf("post object: %w", err)
 	}

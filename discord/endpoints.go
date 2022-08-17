@@ -20,14 +20,14 @@ func getMessageChannelEndpointById(channelID string) string {
 	return getChannelsEndpoint() + fmt.Sprintf("/%s/messages", channelID)
 }
 
-func getInteractionsCallbackEndpoint(token string) string {
+func getInteractionsCallbackEndpoint(id string, token string) string {
 
-	return getInteractionsEndpoint(token) + "/callback"
+	return getInteractionsEndpoint(id, token) + "/callback"
 }
 
-func getInteractionsEndpoint(token string) string {
+func getInteractionsEndpoint(id string, token string) string {
 
-	return fmt.Sprintf("https://discord.com/api/v10/interactions/%s/%s", os.Getenv("DISCORD_APPLICATION_ID"), token)
+	return fmt.Sprintf("https://discord.com/api/v10/interactions/%s/%s", id, token)
 }
 
 func getWebHookEndpointForToken(token string) string {
