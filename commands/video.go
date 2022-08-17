@@ -31,6 +31,7 @@ func (d VideoCommand) Execute() error {
 	ytCommand.Stderr = os.Stdout
 	outBytes, err := ytCommand.Output()
 	if err != nil {
+		discord.EditOriginalInteraction("", d.interactionCreate.D.Token, &builders.CreateInteractionCallback().AddContent("I couldn't do it.").Get().Data)
 		return fmt.Errorf("run yt-dlp: %w", err)
 	}
 
