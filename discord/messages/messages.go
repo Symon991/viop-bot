@@ -143,6 +143,7 @@ type Data struct {
 	Embeds      []Embed      `json:"embeds"`
 	Components  []Components `json:"components"`
 	Attachments []Attachment `json:"attachments"`
+	Flags       int          `json:"flags"`
 }
 
 type Embed struct {

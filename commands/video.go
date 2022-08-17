@@ -21,7 +21,8 @@ func (d VideoCommand) Execute() error {
 	rangeString := d.interactionCreate.D.Data.Options[1].Value.(string)
 
 	interactionCallback := builders.CreateInteractionCallback().
-		AddContent("Will do, bro.")
+		AddContent("Will do, bro.").
+		Ephemeral()
 
 	discord.PostInteractionResponse(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
 

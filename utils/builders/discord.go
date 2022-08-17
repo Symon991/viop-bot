@@ -90,6 +90,13 @@ func CreateField(name string, value string) *FieldBuilder {
 	}
 }
 
+func (builder *InteractionCallbackBuilder) Ephemeral() *InteractionCallbackBuilder {
+
+	builder.Data.Flags = int(int8(1) << int8(6))
+
+	return builder
+}
+
 func (builder *InteractionCallbackBuilder) AddContent(content string) *InteractionCallbackBuilder {
 
 	builder.Data = messages.Data{
