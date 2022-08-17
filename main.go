@@ -44,6 +44,7 @@ func main() {
 
 func startDiscord(errorChan chan error) *websocket.Conn {
 
+	discord.Init()
 	conn, interval, err := discord.Connect()
 	if err != nil {
 		log.Panic(err)
