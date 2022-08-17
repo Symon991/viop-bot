@@ -37,11 +37,6 @@ func (d VideoCommand) Execute() error {
 
 	interaction := builders.CreateInteractionCallback().AddContent("[Youtube]")
 
-	err = discord.DeleteOriginalInteraction(d.interactionCreate.D.Token)
-	if err != nil {
-		return fmt.Errorf("delete original interaction: %w", err)
-	}
-
 	err = discord.PostFollowUpWithFile(
 		d.interactionCreate.D.Token,
 		outBytes,
