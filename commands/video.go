@@ -25,7 +25,7 @@ func (d VideoCommand) Execute() error {
 
 	discord.PostInteractionResponse(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
 
-	parameters := []string{ytLinkString, "-f", "best[height=720]", "--downloader-args", "ffmpeg_o:-f webm", "--download-sections", rangeString, "--force-keyframes-at-cuts", "-v", "-o", "-"}
+	parameters := []string{ytLinkString, "-f", "best[height<=720]", "--downloader-args", "ffmpeg_o:-f webm", "--download-sections", rangeString, "--force-keyframes-at-cuts", "-v", "-o", "-"}
 	ytCommand := exec.Command("yt-dlp", parameters...)
 
 	ytCommand.Stderr = os.Stdout
