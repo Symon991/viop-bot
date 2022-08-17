@@ -44,7 +44,7 @@ func (client *Client) createRequest(url string, method string, contentType strin
 
 func (client *Client) DoRequest(url string, method string, contentType string, body []byte) (int, []byte, error) {
 
-	request, err := client.createRequest(url, method, contentType, nil)
+	request, err := client.createRequest(url, method, contentType, body)
 	if err != nil {
 		return http.StatusInternalServerError, nil, fmt.Errorf("request create: %w", err)
 	}
@@ -67,7 +67,7 @@ func (client *Client) DoRequest(url string, method string, contentType string, b
 
 func (client *Client) DoStream(url string, method string, contentType string, body []byte) (*http.Response, error) {
 
-	request, err := client.createRequest(url, method, contentType, nil)
+	request, err := client.createRequest(url, method, contentType, body)
 	if err != nil {
 		return nil, fmt.Errorf("request create: %w", err)
 	}
