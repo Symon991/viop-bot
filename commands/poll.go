@@ -4,7 +4,7 @@ import (
 	"bot/cache"
 	"bot/discord"
 	"bot/discord/messages"
-	"bot/utils"
+	"bot/utils/builders"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -56,7 +56,7 @@ func (p *PollCommand) Execute() error {
 
 	interactionCallback := messageFromPoll(poll, false, true)
 
-	discord.PostInteractionCallback(p.interactionCreate.D.ID, p.interactionCreate.D.Token, interactionCallback.Get())
+	discord.PostInteractionResponse(p.interactionCreate.D.ID, p.interactionCreate.D.Token, interactionCallback.Get())
 
 	return nil
 }
@@ -72,44 +72,44 @@ func pivotOptionUsers(poll Poll) *map[int][]string {
 	return &pivot
 }
 
-func messageFromPoll(poll Poll, edit bool, showUsers bool) *utils.InteractionCallbackBuilder {
+func messageFromPoll(poll Poll, edit bool, showUsers bool) *builders.InteractionCallbackBuilder {
 
-	embed := utils.CreateEmbed("Poll", poll.Question)
-	selectComponent := utils.CreateSelectComponent("Your choice:", "test")
+	embed := builders.CreateEmbed("Poll", poll.Question)
+	selectComponent := builders.CreateSelectComponent("Your choice:", "test")
 	pivot := pivotOptionUsers(poll)
 
 	for i, option := range poll.Options {
 		if showUsers {
-			embed.AddField(utils.CreateField(option.Description,
+			embed.AddField(builders.CreateField(option.Description,
 				fmt.Sprintf("%d (%s)",
 					option.Votes,
 					strings.Join((*pivot)[i], ","))))
 		} else {
-			embed.AddField(utils.CreateField(option.Description, fmt.Sprint(option.Votes)))
+			embed.AddField(builders.CreateField(option.Description, fmt.Sprint(option.Votes)))
 		}
-		selectComponent.AddOption(utils.CreateOption(option.Description, "", fmt.Sprint(i)))
+		selectComponent.AddOption(builders.CreateOption(option.Description, "", fmt.Sprint(i)))
 	}
 
-	interactionCallbackBuilder := utils.CreateInteractionCallbackEdit(edit).
+	interactionCallbackBuilder := builders.CreateInteractionCallbackEdit(edit).
 		AddEmbed(embed).
 		AddActionRowComponent(
-			utils.CreateActionRowComponent().
+			builders.CreateActionRowComponent().
 				AddComponent(selectComponent))
 
 	return interactionCallbackBuilder
 }
 
-func followUpFromPoll(poll Poll) *utils.InteractionCallbackBuilder {
+func followUpFromPoll(poll Poll) *builders.InteractionCallbackBuilder {
 
-	selectComponent := utils.CreateSelectComponent("Your choice:", "test")
+	selectComponent := builders.CreateSelectComponent("Your choice:", "test")
 
 	for i, option := range poll.Options {
-		selectComponent.AddOption(utils.CreateOption(option.Description, "", fmt.Sprint(i)))
+		selectComponent.AddOption(builders.CreateOption(option.Description, "", fmt.Sprint(i)))
 	}
 
-	interactionCallbackBuilder := utils.CreateInteractionCallbackEdit(true).
+	interactionCallbackBuilder := builders.CreateInteractionCallbackEdit(true).
 		AddActionRowComponent(
-			utils.CreateActionRowComponent().
+			builders.CreateActionRowComponent().
 				AddComponent(selectComponent))
 
 	return interactionCallbackBuilder
@@ -152,7 +152,7 @@ func (p *PollCommand) Respond() error {
 
 	interactionCallback := messageFromPoll(poll, true, true)
 
-	discord.PostInteractionCallback(p.interactionCreate.D.ID, p.interactionCreate.D.Token, interactionCallback.Get())
+	discord.PostInteractionResponse(p.interactionCreate.D.ID, p.interactionCreate.D.Token, interactionCallback.Get())
 
 	return nil
 }

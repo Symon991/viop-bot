@@ -4,6 +4,7 @@ import (
 	"bot/discord"
 	"bot/discord/messages"
 	"bot/utils"
+	"bot/utils/builders"
 	"fmt"
 )
 
@@ -15,11 +16,11 @@ func (d HelloCommand) Execute() error {
 
 	name := utils.GetUsername(&d.interactionCreate)
 
-	interactionCallback := utils.CreateInteractionCallback().
+	interactionCallback := builders.CreateInteractionCallback().
 		AddContent(
 			fmt.Sprintf("Hello, %s.", name))
 
-	discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
+	discord.PostInteractionResponse(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
 
 	return nil
 }

@@ -4,7 +4,7 @@ import (
 	"bot/discord"
 	"bot/discord/messages"
 	"bot/twitter"
-	"bot/utils"
+	"bot/utils/builders"
 	"fmt"
 )
 
@@ -43,16 +43,16 @@ func (d TwitterCommand) Execute() error {
 		return fmt.Errorf("get rules: %w", err)
 	}
 
-	embed := utils.CreateEmbed("Rules", "")
+	embed := builders.CreateEmbed("Rules", "")
 	for _, rule := range rules.Data {
-		embed.AddField(utils.CreateField(fmt.Sprintf("%s (%s)", rule.Tag, rule.ID), rule.Value))
+		embed.AddField(builders.CreateField(fmt.Sprintf("%s (%s)", rule.Tag, rule.ID), rule.Value))
 	}
 
-	interactionCallback := utils.CreateInteractionCallback().
+	interactionCallback := builders.CreateInteractionCallback().
 		AddContent(message).
 		AddEmbed(embed)
 
-	discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
+	discord.PostInteractionResponse(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
 
 	return nil
 }

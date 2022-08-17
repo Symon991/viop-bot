@@ -3,7 +3,7 @@ package commands
 import (
 	"bot/discord"
 	"bot/discord/messages"
-	"bot/utils"
+	"bot/utils/builders"
 	"fmt"
 	"time"
 )
@@ -34,11 +34,11 @@ func (d MudTimeCommand) Execute() error {
 	inputTime = inputTime.AddDate(2020, 0, 0)
 	mudTime := inputTime.In(mudLocation)
 
-	interactionCallback := utils.CreateInteractionCallback().
+	interactionCallback := builders.CreateInteractionCallback().
 		AddContent(fmt.Sprintf("%s in MudTime: %s", inputTime.Format(time.Kitchen), mudTime.Format(time.Kitchen))).
 		Get()
 
-	discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback)
+	discord.PostInteractionResponse(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback)
 
 	return nil
 }

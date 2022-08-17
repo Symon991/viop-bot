@@ -26,7 +26,7 @@ func Monitor(errorChan chan error) {
 			for _, matchingRule := range tweet.MatchingRules {
 				matchingRules = append(matchingRules, matchingRule.Tag)
 			}
-			err := discord.PostChannelMessage(messages.ChannelMessage{
+			err := discord.PostChannelMessage("1003011209848701068", messages.ChannelMessage{
 				Content: fmt.Sprintf("[%s] https://twitter.com/user/status/%s", strings.Join(matchingRules, ", "), tweet.Data.ID),
 			})
 			if err != nil {

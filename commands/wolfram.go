@@ -3,7 +3,7 @@ package commands
 import (
 	"bot/discord"
 	"bot/discord/messages"
-	"bot/utils"
+	"bot/utils/builders"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -44,12 +44,12 @@ func (d WolframCommand) Execute() error {
 		reply = wolframResponse.Result
 	}
 
-	interactionCallback := utils.CreateInteractionCallback().
+	interactionCallback := builders.CreateInteractionCallback().
 		AddContent(
 			fmt.Sprintf("%s: %s", d.interactionCreate.D.Data.Options[0].Value, reply)).
 		Get()
 
-	discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback)
+	discord.PostInteractionResponse(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback)
 
 	return nil
 }

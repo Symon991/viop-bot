@@ -2,143 +2,63 @@ package discord
 
 import (
 	"bot/discord/messages"
-	"bot/utils"
-	"bytes"
+	"bot/utils/builders"
+	"bot/utils/http"
 	"encoding/json"
 	"fmt"
-	"io"
-	"log"
-	"mime/multipart"
-	"net/http"
-	"net/textproto"
-	"os"
 )
 
-func PostInteractionCallback(id string, token string, interactionCallbackPayload *messages.InteractionCallback) (string, error) {
+func PostInteractionResponse(id string, token string, interactionCallbackPayload *messages.InteractionCallback) (string, error) {
 
-	callbackPayload, err := json.Marshal(interactionCallbackPayload)
+	_, bodyResponse, err := client.DoPostObject(getInteractionsCallbackEndpoint(token), interactionCallbackPayload)
 	if err != nil {
-		return "", fmt.Errorf("marshal callback message: %s", err)
+		return "", fmt.Errorf("post object: %w", err)
 	}
-
-	callback := fmt.Sprintf(discordCallbackTemplateUrl, id, token)
-	log.Printf("%s\n\n", callback)
-	log.Printf("%s\n\n", callbackPayload)
-	response, err := http.Post(callback, "application/json", bytes.NewBuffer(callbackPayload))
-	if err != nil {
-		return "", fmt.Errorf("post callback message: %s", err)
-	}
-	defer response.Body.Close()
-
-	body, _ := io.ReadAll(response.Body)
-	log.Printf("%s\n\n", string(body))
 
 	var messageCreate messages.MessageCreate
-	json.Unmarshal(body, &messageCreate)
+	json.Unmarshal(bodyResponse, &messageCreate)
 
 	return messageCreate.ID, nil
 }
 
-func PostFollowUpWithFile(token string, fileBytes []byte, filename string, interaction *utils.InteractionCallbackBuilder) error {
+func PostFollowUpWithFile(token string, fileBytes []byte, filename string, interaction *builders.InteractionCallbackBuilder) error {
 
 	interaction.
 		AddAttachment(
-			utils.CreateAttachment(0, "video", filename))
+			builders.CreateAttachment(0, "video", filename))
 
-	callback := fmt.Sprintf(discordFollowUpTemplateUrl, os.Getenv("DISCORD_APPLICATION_ID"), token)
-
-	payloadJsonBytes, err := json.Marshal(interaction.Get().Data)
+	writer, bodyBytes, err := http.CreateFormFileWithMessage(interaction, filename, fileBytes)
 	if err != nil {
-		return fmt.Errorf("marshal payload: %w", err)
+		return fmt.Errorf("create form file with message: %w", err)
 	}
 
-	log.Printf("debug payload : %s", payloadJsonBytes)
-
-	body := bytes.Buffer{}
-	writer := multipart.NewWriter(&body)
-
-	mime := textproto.MIMEHeader{}
-	mime.Set("Content-Disposition", "form-data; name=\"payload_json\"")
-	mime.Set("Content-Type", "application/json")
-
-	contentWriter, err := writer.CreatePart(mime)
+	_, _, err = client.DoRequest(getWebHookEndpointForToken(token), "POST", writer.FormDataContentType(), bodyBytes)
 	if err != nil {
-		return fmt.Errorf("create form: %w", err)
+		return fmt.Errorf("post: %w", err)
 	}
-	contentWriter.Write(payloadJsonBytes)
-
-	fileWriter, err := writer.CreateFormFile("files[0]", filename)
-	if err != nil {
-		return fmt.Errorf("create form file: %w", err)
-	}
-	_, err = fileWriter.Write(fileBytes)
-	if err != nil {
-		return fmt.Errorf("write file form: %w", err)
-	}
-
-	err = writer.Close()
-	if err != nil {
-		return fmt.Errorf("close writer: %w", err)
-	}
-
-	request, err := http.NewRequest("POST", callback, bytes.NewReader(body.Bytes()))
-	if err != nil {
-		return fmt.Errorf("request create: %w", err)
-	}
-
-	request.Header.Set("Content-Type", writer.FormDataContentType())
-	request.Header.Set("Authorization", fmt.Sprintf("Bot %s", os.Getenv("DISCORD_BEARER_TOKEN")))
-
-	response, err := http.DefaultClient.Do(request)
-	if err != nil {
-		return fmt.Errorf("request create: %w", err)
-	}
-
-	defer response.Body.Close()
-
-	responseBody, _ := io.ReadAll(response.Body)
-	log.Printf("%s", string(responseBody))
 
 	return nil
 }
 
 func PostFollowUp(id string, token string, interactionCallbackPayload *messages.InteractionCallback) error {
 
-	callbackPayload, err := json.Marshal(interactionCallbackPayload)
+	_, _, err := client.DoPostObject(getWebHookEndpointForToken(token), interactionCallbackPayload)
 	if err != nil {
-		return fmt.Errorf("marshal follow up message: %s", err)
+		return fmt.Errorf("post object: %w", err)
 	}
-
-	callback := fmt.Sprintf(discordFollowUpTemplateUrl, id, token)
-	log.Printf("%s\n\n", callback)
-	log.Printf("%s\n\n", callbackPayload)
-	response, err := http.Post(callback, "application/json", bytes.NewBuffer(callbackPayload))
-	if err != nil {
-		return fmt.Errorf("post follow up message: %s", err)
-	}
-	defer response.Body.Close()
-
-	body, _ := io.ReadAll(response.Body)
-	fmt.Printf("%s\n\n", string(body))
 
 	return nil
 }
 
 func GetOriginalInteraction(appId string, token string, messageId string) (*messages.InteractionCallback, error) {
 
-	getCallback := fmt.Sprintf(discordGetCallbackTemplateUrl, appId, token)
-	response, err := http.Get(getCallback)
-	log.Printf("%s\n\n", getCallback)
+	_, bodyResponse, err := client.DoGet(getOriginalMessageEndpointForToken(token))
 	if err != nil {
-		return nil, fmt.Errorf("get original interaction: %s", err)
+		return nil, fmt.Errorf("delete: %w", err)
 	}
-	defer response.Body.Close()
-
-	body, _ := io.ReadAll(response.Body)
-	log.Printf("debug getOriginal Interaction %s\n\n", body)
 
 	var interactionCallbackPayload messages.InteractionCallback
-	err = json.Unmarshal(body, &interactionCallbackPayload)
+	err = json.Unmarshal(bodyResponse, &interactionCallbackPayload)
 	if err != nil {
 		return nil, fmt.Errorf("unmarshal response: %s", err)
 	}
@@ -148,45 +68,20 @@ func GetOriginalInteraction(appId string, token string, messageId string) (*mess
 
 func EditOriginalInteraction(appId string, token string, interactionCallbackPayload *messages.Data) error {
 
-	callbackPayload, err := json.Marshal(interactionCallbackPayload)
+	_, _, err := client.DoPatchObject(getOriginalMessageEndpointForToken(token), interactionCallbackPayload)
 	if err != nil {
-		return fmt.Errorf("marshal callback message: %s", err)
+		return fmt.Errorf("patch object: %w", err)
 	}
-
-	callback := fmt.Sprintf(discordEditCallbackTemplateUrl, appId, token)
-	log.Printf("%s\n\n", callback)
-	log.Printf("%s\n\n", callbackPayload)
-
-	request, _ := http.NewRequest("PATCH", callback, bytes.NewBuffer(callbackPayload))
-	request.Header.Set("Content-Type", "application/json")
-
-	response, err := http.DefaultClient.Do(request)
-	if err != nil {
-		return fmt.Errorf("post callback message: %s", err)
-	}
-	defer response.Body.Close()
-
-	body, _ := io.ReadAll(response.Body)
-	log.Printf("%s", string(body))
 
 	return nil
 }
 
 func DeleteOriginalInteraction(token string) error {
 
-	callback := fmt.Sprintf(deleteInitialResponseTemplateUrl, os.Getenv("DISCORD_APPLICATION_ID"), token)
-	log.Printf("%s\n\n", callback)
-
-	request, _ := http.NewRequest("DELETE", callback, nil)
-
-	response, err := http.DefaultClient.Do(request)
+	_, _, err := client.DoDelete(getOriginalMessageEndpointForToken(token))
 	if err != nil {
-		return fmt.Errorf("post callback message: %s", err)
+		return fmt.Errorf("delete: %w", err)
 	}
-	defer response.Body.Close()
-
-	body, _ := io.ReadAll(response.Body)
-	log.Printf("%s", string(body))
 
 	return nil
 }

@@ -3,7 +3,7 @@ package commands
 import (
 	"bot/discord"
 	"bot/discord/messages"
-	"bot/utils"
+	"bot/utils/builders"
 	"fmt"
 	"net/url"
 	"os"
@@ -20,10 +20,10 @@ func (d VideoCommand) Execute() error {
 	ytLinkString := d.interactionCreate.D.Data.Options[0].Value.(string)
 	rangeString := d.interactionCreate.D.Data.Options[1].Value.(string)
 
-	interactionCallback := utils.CreateInteractionCallback().
+	interactionCallback := builders.CreateInteractionCallback().
 		AddContent("Will do, bro.")
 
-	discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
+	discord.PostInteractionResponse(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
 
 	parameters := []string{ytLinkString, "-f", "best[height=720]", "--downloader-args", "ffmpeg_o:-f webm", "--download-sections", rangeString, "--force-keyframes-at-cuts", "-v", "-o", "-"}
 	ytCommand := exec.Command("yt-dlp", parameters...)
@@ -34,7 +34,7 @@ func (d VideoCommand) Execute() error {
 		return fmt.Errorf("run yt-dlp: %w", err)
 	}
 
-	interaction := utils.CreateInteractionCallback().AddContent("[Youtube]")
+	interaction := builders.CreateInteractionCallback().AddContent("[Youtube]")
 
 	err = discord.DeleteOriginalInteraction(d.interactionCreate.D.Token)
 	if err != nil {

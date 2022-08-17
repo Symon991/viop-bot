@@ -56,6 +56,7 @@ func startDiscord(errorChan chan error) *websocket.Conn {
 
 func startTwitter(errorChan chan error) {
 
+	twitter.Init()
 	go twitter.Monitor(errorChan)
 }
 

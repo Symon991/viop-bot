@@ -3,7 +3,7 @@ package commands
 import (
 	"bot/discord"
 	"bot/discord/messages"
-	"bot/utils"
+	"bot/utils/builders"
 	"fmt"
 	"math/rand"
 	"time"
@@ -26,11 +26,11 @@ func (d DiceCommand) Execute() error {
 		result = append(result, rand.Int63n(faces)+1)
 	}
 
-	interactionCallback := utils.CreateInteractionCallback().
+	interactionCallback := builders.CreateInteractionCallback().
 		AddContent(fmt.Sprintf("%dd%d, result: %d", dices, faces, result)).
 		Get()
 
-	discord.PostInteractionCallback(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback)
+	discord.PostInteractionResponse(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback)
 
 	return nil
 }
