@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"net/textproto"
@@ -58,6 +59,8 @@ func (client *Client) DoRequest(url string, method string, contentType string, b
 	if err != nil {
 		return http.StatusInternalServerError, nil, fmt.Errorf("read response: %w", err)
 	}
+
+	log.Printf("%s", string(responseBody))
 
 	return response.StatusCode, responseBody, nil
 }
