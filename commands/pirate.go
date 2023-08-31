@@ -2,7 +2,6 @@ package commands
 
 import (
 	"bot/cache"
-	"bot/commands/pirate"
 	"bot/discord"
 	"bot/discord/messages"
 	"bot/utils"
@@ -10,6 +9,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+
+	pirate "github.com/symon991/pirate/sites"
 )
 
 type PirateCommand struct {
@@ -90,11 +91,16 @@ func (d PirateCommand) Respond() error {
 	fmt.Printf("debug selected value %s\n\n", d.interactionCreate.D.Data.Values[0])
 	index, _ := strconv.ParseInt(d.interactionCreate.D.Data.Values[0], 10, 64)
 
+	magnet, err := search.GetMagnet(cachePirateEntry.Metadata[index])
+	if err != nil {
+		return fmt.Errorf("get magnet: %w", err)
+	}
+
 	interactionCallback := builders.CreateInteractionCallback().
 		AddEmbed(
 			builders.CreateEmbed(
 				cachePirateEntry.Metadata[index].Name[:utils.Min(len(cachePirateEntry.Metadata[index].Name), 100)],
-				fmt.Sprintf("`%s`", search.GetMagnet(cachePirateEntry.Metadata[index]))))
+				fmt.Sprintf("`%s`", magnet)))
 
 	_, err = discord.PostInteractionResponse(d.interactionCreate.D.ID, d.interactionCreate.D.Token, interactionCallback.Get())
 	if err != nil {

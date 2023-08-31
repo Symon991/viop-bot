@@ -1,0 +1,12 @@
+version: '3.9'
+services:
+  bot:
+    image: symon7991/viop-bot
+    environment:
+      - DISCORD_APPLICATION_ID=
+      - DISCORD_BEARER_TOKEN=
+      - TWITTER_BEARER_TOKEN=
+      - WOLFRAM_APPLICATION_ID=
+      - REDISCLOUD_URL=redis://cache:6379
+  cache:
+    image: redis

@@ -11,12 +11,15 @@ import (
 	"os"
 
 	"github.com/gorilla/websocket"
+	pirateConfig "github.com/symon991/pirate/config"
 )
 
 func main() {
 
 	discordErrorChan := make(chan error)
 	twitterErrorChan := make(chan error)
+
+	pirateConfig.LoadConfig()
 
 	startRedis()
 	conn := startDiscord(discordErrorChan)
